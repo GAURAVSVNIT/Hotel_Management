@@ -1,0 +1,25 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h2>Order History</h2>
+
+    {% if user.is_authenticated %}
+        {% if orders %}
+            <ul>
+                {% for order in orders %}
+                    <li>
+                        <a href="{% url 'order_summary' order.id %}">
+                            Order from {{ order.restaurant.name }} - ₹{{ order.total_price }} ({{ order.created_at }})
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No orders yet.</p>
+        {% endif %}
+    {% else %}
+        <p>You must <a href="{% url 'login' %}">log in</a> to view order history.</p>
+    {% endif %}
+
+    <a href="{% url 'restaurant_list' %}">Browse Restaurants</a>
+{% endblock %}

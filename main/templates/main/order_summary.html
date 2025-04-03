@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h2>Order Summary</h2>
+
+    <p><strong>Restaurant:</strong> {{ order.restaurant.name }}</p>
+    <p><strong>Total Price:</strong> ₹{{ order.total_price }}</p>
+
+    {% if order.discount_applied > 0 %}
+        <p><strong>Discount Applied:</strong> ₹{{ order.discount_applied }}</p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Apply Coupon</button>
+        </form>
+    {% else %}
+        <p>Login to use coupons.</p>
+    {% endif %}
+
+    <a href="{% url 'restaurant_list' %}">Back to Restaurants</a>
+{% endblock %}
+
+<p><strong>Payment Status:</strong> Not Paid</p>
+<a href="{% url 'restaurant_list' %}">Pay Now (Coming Soon)</a>
+

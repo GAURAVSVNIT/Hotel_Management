@@ -1,0 +1,34 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <h2>{{ restaurant.name }}</h2>
+    <p>{{ restaurant.description }}</p>
+
+    <h3>Menu</h3>
+    <ul>
+        {% for item in restaurant.menu_items.all %}
+            <li>{{ item.name }} - ₹{{ item.price }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'restaurant_list' %}">Back to Restaurants</a>
+{% endblock %}
+
+
+<h3>Menu</h3>
+<form method="POST" action="{% url 'place_order' restaurant.id %}">
+    {% csrf_token %}
+    <ul>
+        {% for item in restaurant.menu_items.all %}
+            <li>
+                <input type="checkbox" name="menu_items" value="{{ item.id }}">
+                {{ item.name }} - ₹{{ item.price }}
+            </li>
+        {% endfor %}
+    </ul>
+    {% if user.is_authenticated %}
+        <button type="submit">Place Order</button>
+    {% else %}
+        <p><a href="{% url 'login' %}">Login</a> to place an order.</p>
+    {% endif %}
+</form>

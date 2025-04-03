@@ -1,0 +1,13 @@
+{% extends 'main/base.html' %}
+
+{% if restaurant %}
+    <form method="POST" action="{% url 'place_order' restaurant.id %}">
+        {% csrf_token %}
+        {% for item in menu_items %}
+            <input type="checkbox" name="items" value="{{ item.id }}"> {{ item.name }} - ${{ item.price }} <br>
+        {% endfor %}
+        <button type="submit">Place Order</button>
+    </form>
+{% else %}
+    <p>No restaurant found. Please add a restaurant first.</p>
+{% endif %}
