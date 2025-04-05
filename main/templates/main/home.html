@@ -1,6 +1,12 @@
 {% extends 'main/base.html' %}
 
+{% block title %}Home - Hotel Management{% endblock %}
+
 {% block content %}
-    <h2>Welcome to the Best Hotel Management App</h2>
-    <p>Explore multiple restaurants, order food, and track your orders easily!</p>
+    <div class="home-container">
+        <h2>Welcome to the Best Hotel Management App</h2>
+        <p>Explore multiple restaurants, order food, and track your orders easily!</p>
+        
+        <a href="{% url 'restaurant_list' %}" class="btn">Explore Restaurants</a>
+    </div>
 {% endblock %}

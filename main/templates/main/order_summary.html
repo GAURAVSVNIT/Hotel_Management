@@ -4,25 +4,34 @@
     <h2>Order Summary</h2>
 
     <p><strong>Restaurant:</strong> {{ order.restaurant.name }}</p>
+    <p><strong>Order Status:</strong> <span class="status {{ order.status|lower }}">{{ order.status }}</span></p>
+
+    <h3>Ordered Items</h3>
+    <ul>
+        {% for item in order.items.all %}
+            <li>{{ item.name }} - ₹{{ item.price }}</li>
+        {% endfor %}
+    </ul>
+
     <p><strong>Total Price:</strong> ₹{{ order.total_price }}</p>
 
     {% if order.discount_applied > 0 %}
         <p><strong>Discount Applied:</strong> ₹{{ order.discount_applied }}</p>
     {% endif %}
 
+    <p><strong>Payment Status:</strong> <span class="unpaid">Not Paid</span></p>
+    <a href="{% url 'restaurant_list' %}" class="btn">Pay Now (Coming Soon)</a>
+
     {% if user.is_authenticated %}
+        <h3>Apply Coupon</h3>
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Apply Coupon</button>
+            <input type="text" name="code" placeholder="Enter coupon code">
+            <button type="submit">Apply</button>
         </form>
     {% else %}
         <p>Login to use coupons.</p>
     {% endif %}
 
-    <a href="{% url 'restaurant_list' %}">Back to Restaurants</a>
+    <a href="{% url 'restaurant_list' %}" class="btn">Back to Restaurants</a>
 {% endblock %}
-
-<p><strong>Payment Status:</strong> Not Paid</p>
-<a href="{% url 'restaurant_list' %}">Pay Now (Coming Soon)</a>
-

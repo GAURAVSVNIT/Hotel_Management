@@ -1,17 +1,25 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    <h2>Restaurants</h2>
-    <ul>
-        {% for restaurant in restaurants %}
-            <li><a href="{% url 'restaurant_detail' restaurant.id %}">{{ restaurant.name }}</a></li>
-        {% endfor %}
-    </ul>
-
-    <h2>Restaurant Menus</h2>
-    <ul>
-        {% for restaurant in restaurants %}
-            <li><a href="{% url 'place_order' restaurant.id %}">{{ restaurant.name }}</a></li>
-        {% endfor %}
-    </ul>
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-3xl font-semibold mb-4">Restaurants</h2>
+        
+        <ul class="space-y-4">
+            {% for restaurant in restaurants %}
+                <li class="bg-gray-100 p-4 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold">
+                        <a href="{% url 'restaurant_detail' restaurant.id %}" class="text-blue-500 hover:underline">
+                            {{ restaurant.name }}
+                        </a>
+                    </h3>
+                    
+                    <div class="mt-2">
+                        <a href="{% url 'place_order' restaurant.id %}" class="bg-green-500 text-white px-4 py-2 rounded-lg inline-block">
+                            Order Now
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

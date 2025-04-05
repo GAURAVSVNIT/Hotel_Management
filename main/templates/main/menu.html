@@ -1,13 +1,24 @@
 {% extends 'main/base.html' %}
 
-{% if restaurant %}
-    <form method="POST" action="{% url 'place_order' restaurant.id %}">
-        {% csrf_token %}
-        {% for item in menu_items %}
-            <input type="checkbox" name="items" value="{{ item.id }}"> {{ item.name }} - ${{ item.price }} <br>
-        {% endfor %}
-        <button type="submit">Place Order</button>
-    </form>
-{% else %}
-    <p>No restaurant found. Please add a restaurant first.</p>
-{% endif %}
+{% block content %}
+    {% if restaurant %}
+        <h2>Menu for {{ restaurant.name }}</h2>
+        
+        <form method="POST" action="{% url 'place_order' restaurant.id %}">
+            {% csrf_token %}
+            <ul>
+                {% for item in menu_items %}
+                    <li>
+                        <input type="checkbox" name="items" value="{{ item.id }}"> 
+                        <strong>{{ item.name }}</strong> - ${{ item.price }}
+                    </li>
+                {% endfor %}
+            </ul>
+            <button type="submit" class="btn">Place Order</button>
+        </form>
+
+        <a href="{% url 'restaurant_list' %}" class="back-link">← Back to Restaurants</a>
+    {% else %}
+        <p>No restaurant found. Please add a restaurant first.</p>
+    {% endif %}
+{% endblock %}

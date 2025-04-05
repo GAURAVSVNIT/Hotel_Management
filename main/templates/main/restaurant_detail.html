@@ -1,34 +1,36 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    <h2>{{ restaurant.name }}</h2>
-    <p>{{ restaurant.description }}</p>
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-3xl font-semibold mb-2">{{ restaurant.name }}</h2>
+        <p class="text-gray-700 mb-4">{{ restaurant.description }}</p>
 
-    <h3>Menu</h3>
-    <ul>
-        {% for item in restaurant.menu_items.all %}
-            <li>{{ item.name }} - ₹{{ item.price }}</li>
-        {% endfor %}
-    </ul>
+        <h3 class="text-xl font-semibold mt-4 mb-2">Menu</h3>
+        
+        <form method="POST" action="{% url 'place_order' restaurant.id %}">
+            {% csrf_token %}
+            <ul class="space-y-2">
+                {% for item in restaurant.menuitem_set.all %}
+                    <li class="flex items-center gap-2 bg-gray-100 p-2 rounded">
+                        <input type="checkbox" name="menu_items" value="{{ item.id }}" class="w-4 h-4">
+                        <span>{{ item.name }} - ₹{{ item.price }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
 
-    <a href="{% url 'restaurant_list' %}">Back to Restaurants</a>
+            {% if user.is_authenticated %}
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4">
+                    Place Order
+                </button>
+            {% else %}
+                <p class="text-red-500 mt-2">
+                    <a href="{% url 'login' %}" class="text-blue-500 underline">Login</a> to place an order.
+                </p>
+            {% endif %}
+        </form>
+
+        <a href="{% url 'restaurant_list' %}" class="inline-block mt-4 text-blue-500 hover:underline">
+            &larr; Back to Restaurants
+        </a>
+    </div>
 {% endblock %}
-
-
-<h3>Menu</h3>
-<form method="POST" action="{% url 'place_order' restaurant.id %}">
-    {% csrf_token %}
-    <ul>
-        {% for item in restaurant.menu_items.all %}
-            <li>
-                <input type="checkbox" name="menu_items" value="{{ item.id }}">
-                {{ item.name }} - ₹{{ item.price }}
-            </li>
-        {% endfor %}
-    </ul>
-    {% if user.is_authenticated %}
-        <button type="submit">Place Order</button>
-    {% else %}
-        <p><a href="{% url 'login' %}">Login</a> to place an order.</p>
-    {% endif %}
-</form>
