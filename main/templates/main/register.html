@@ -1,31 +1,31 @@
 {% extends 'main/base.html' %}
 
-{% block content %}
-    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-4">Create an Account</h2>
+{% block title %}Register - Hotel Management{% endblock %}
 
-        <form method="POST" class="space-y-4">
+{% block content %}
+    <div class="login-container">
+        <h2>Create an Account</h2>
+
+        <form method="POST">
             {% csrf_token %}
 
             {% for field in form %}
-                <div>
-                    <label class="block text-gray-700 font-medium">{{ field.label }}</label>
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
                     {{ field }}
-                    
+
                     {% if field.errors %}
-                        <p class="text-red-500 text-sm mt-1">{{ field.errors.as_text }}</p>
+                        <p class="error">{{ field.errors.as_text }}</p>
                     {% endif %}
                 </div>
             {% endfor %}
 
-            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg w-full">
-                Sign Up
-            </button>
+            <button type="submit" class="btn">Sign Up</button>
         </form>
 
-        <p class="mt-4 text-center">
-            Already have an account? 
-            <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Login</a>
+        <p class="info-text">
+            Already have an account?
+            <a href="{% url 'login' %}">Login</a>
         </p>
     </div>
 {% endblock %}

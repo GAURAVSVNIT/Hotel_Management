@@ -135,3 +135,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'  # Collect static files for production
 # Media Files Configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'  # Store uploaded files
+
+# Authentication Redirections
+LOGIN_URL = 'login'              # Where to go when login is required
+LOGIN_REDIRECT_URL = 'home'      # Where to go after successful login
+LOGOUT_REDIRECT_URL = 'login'    # Where to go after logout
