@@ -1,64 +1,208 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
-{% block title %}Home - Eatsy{% endblock %}
+{% block title %}Home - Hotel Management{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<div class="hero">
-    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=2070" alt="Hero" class="hero-image">
-    <div class="hero-content">
-        <h2 class="hero-title">Discover the Best Food in Town</h2>
-        <p class="hero-subtitle">Order from over 1,000+ restaurants with fast delivery</p>
-        <button class="primary-button">Order Now</button>
+<div class="relative h-96 overflow-hidden">
+    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=2070" alt="Luxury Hotel" class="w-full h-full object-cover">
+    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+        <div class="text-center text-white px-4">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Welcome to Luxury Hotel</h1>
+            <p class="text-xl md:text-2xl mb-6">Experience comfort and elegance at its finest</p>
+            <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                Book Your Stay
+            </a>
+        </div>
     </div>
 </div>
 
 <!-- Features -->
-<div class="features">
-    <div class="container">
-        <div class="features-grid">
-            <div class="feature-card">
-                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="12 6 12 12 16 14"/>
-                </svg>
-                <h3 class="feature-title">Fast Delivery</h3>
-                <p class="feature-description">Get your food delivered in under 30 minutes</p>
+<div class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Hotel Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="text-blue-600 mb-4">
+                    <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">24/7 Room Service</h3>
+                <p class="text-gray-600">Enjoy our round-the-clock room service for your convenience.</p>
             </div>
-            <div class="feature-card">
-                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 
-                    5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-                <h3 class="feature-title">Best Quality</h3>
-                <p class="feature-description">We partner with only the best restaurants</p>
+            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="text-blue-600 mb-4">
+                    <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Free WiFi</h3>
+                <p class="text-gray-600">Stay connected with high-speed internet throughout the hotel.</p>
             </div>
-            <div class="feature-card">
-                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 
-                    7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
-                    <line x1="6" y1="17" x2="18" y2="17"/>
-                </svg>
-                <h3 class="feature-title">Top Chefs</h3>
-                <p class="feature-description">Experienced chefs preparing your meals</p>
+            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="text-blue-600 mb-4">
+                    <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Spa & Wellness</h3>
+                <p class="text-gray-600">Relax and rejuvenate at our spa with premium treatments.</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Featured Restaurants -->
-<div class="restaurants">
-    <div class="container">
-        <h2 class="section-title">Featured Restaurants</h2>
-        <div class="restaurants-grid" id="restaurantsGrid">
-            <!-- JS can populate restaurant cards dynamically -->
+<!-- Featured Rooms -->
+<div class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Featured Rooms</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=2070" alt="Deluxe Room" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Deluxe Room</h3>
+                    <p class="text-gray-600 mb-4">Spacious room with a king-size bed and city view.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">$199/night</span>
+                        <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition duration-300">View Details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&q=80&w=2070" alt="Executive Suite" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Executive Suite</h3>
+                    <p class="text-gray-600 mb-4">Elegant suite with separate living area and balcony.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">$299/night</span>
+                        <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition duration-300">View Details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=2070" alt="Family Room" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Family Room</h3>
+                    <p class="text-gray-600 mb-4">Perfect for families with two queen beds and amenities.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-600 font-bold">$249/night</span>
+                        <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition duration-300">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hotel Amenities -->
+<div class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Hotel Amenities</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div class="p-4">
+                <div class="text-blue-600 mb-2">
+                    <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold">Swimming Pool</h3>
+            </div>
+            <div class="p-4">
+                <div class="text-blue-600 mb-2">
+                    <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold">Fitness Center</h3>
+            </div>
+            <div class="p-4">
+                <div class="text-blue-600 mb-2">
+                    <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold">Restaurant</h3>
+            </div>
+            <div class="p-4">
+                <div class="text-blue-600 mb-2">
+                    <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold">Security</h3>
+            </div>
+            <div class="p-4">
+                <div class="text-blue-600 mb-2">
+                    <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold">Luggage Storage</h3>
+            </div>
+            <div class="p-4">
+                <div class="text-blue-600 mb-2">
+                    <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold">Fast Charging</h3>
+            </div>
+            <div class="p-4">
+                <div class="text-blue-600 mb-2">
+                    <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold">Payment Options</h3>
+            </div>
+            <div class="p-4">
+                <div class="text-blue-600 mb-2">
+                    <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold">Prime Location</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Special Offers -->
+<div class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Special Offers</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-600">
+                <h3 class="text-xl font-semibold mb-2">Weekend Getaway</h3>
+                <p class="text-gray-600 mb-4">Stay for 2 nights over the weekend and get 20% off your booking.</p>
+                <p class="text-blue-600 font-semibold mb-2">Use code: WEEKEND20</p>
+                <a href="#" class="text-blue-700 font-bold hover:underline">Book Now →</a>
+            </div>
+            <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-600">
+                <h3 class="text-xl font-semibold mb-2">Extended Stay</h3>
+                <p class="text-gray-600 mb-4">Book for 5+ nights and receive complimentary breakfast and airport transfers.</p>
+                <p class="text-blue-600 font-semibold mb-2">Use code: EXTENDED5</p>
+                <a href="#" class="text-blue-700 font-bold hover:underline">Book Now →</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="py-16 bg-blue-600 text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-6">Ready to Experience Luxury?</h2>
+        <p class="text-xl mb-8">Book your stay today and enjoy our premium amenities and services.</p>
+        <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4">
+            <a href="#" class="bg-white text-blue-600 hover:bg-blue-100 font-bold py-3 px-6 rounded-lg transition duration-300">
+                Book Now
+            </a>
+            <a href="#" class="bg-transparent hover:bg-blue-700 border-2 border-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                Contact Us
+            </a>
         </div>
     </div>
 </div>

@@ -6,12 +6,14 @@ __pycache__/
 *.pyc
 *.so
 
-# Virtual environment
+# Virtual Environment
 venv/
 .venv/
 ENV/
 env/
 *.env
+.env.*
+*.pid
 
 # Django
 *.log
@@ -20,9 +22,27 @@ env/
 db.sqlite3
 db.sqlite3-journal
 
-# Static and media files
+# Migrations (but keep __init__.py)
+**/migrations/
+!**/migrations/__init__.py
+
+# Static & Media Files
 /staticfiles/
 /media/
+
+# Tailwind CSS & Node (Django-Tailwind)
+node_modules/
+theme/static_src/
+theme/static/
+tailwind.config.js
+postcss.config.js
+webpack.config.js
+package-lock.json
+yarn.lock
+
+# Dotenv
+*.env
+.env.*
 
 # VS Code
 .vscode/
@@ -35,20 +55,11 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# JetBrains IDEs (e.g., PyCharm)
+# JetBrains IDEs
 .idea/
 
 # Pipenv
 Pipfile.lock
-
-# Migrations
-**/migrations/
-!**/migrations/__init__.py
-
-# Tailwind CSS (if you're using django-tailwind)
-node_modules/
-theme/static_src/
-theme/static/
 
 # Coverage reports
 htmlcov/
@@ -56,13 +67,6 @@ htmlcov/
 .tox/
 .pytest_cache/
 
-# dotenv
-*.env
-.env.*
-
-# Gunicorn/PID files
-*.pid
-
-# MySQL / Postgres dumps
+# Database dumps
 *.sql
 *.dump
