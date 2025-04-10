@@ -1,25 +1,39 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-3xl font-semibold mb-4">Restaurants</h2>
+    <div class="max-w-6xl mx-auto p-6">
+        <h2 class="text-3xl font-semibold mb-6 text-center">Restaurants</h2>
         
-        <ul class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for restaurant in restaurants %}
-                <li class="bg-gray-100 p-4 rounded-lg shadow">
-                    <h3 class="text-xl font-semibold">
+                <div class="bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <!-- Restaurant Image -->
+                    {% if restaurant.image %}
+                        <img src="{{ restaurant.image }}" alt="{{ restaurant.name }}" class="w-full h-40 object-cover rounded-lg mb-4">
+                    {% else %}
+                        <div class="w-full h-40 bg-gray-300 flex items-center justify-center text-white rounded-lg mb-4">No Image Available</div>
+                    {% endif %}
+                    
+                    <h3 class="text-xl font-semibold text-center mb-2">
                         <a href="{% url 'restaurant_detail' restaurant.id %}" class="text-blue-500 hover:underline">
                             {{ restaurant.name }}
                         </a>
                     </h3>
+
+                    <!-- Restaurant Description (show on hover) -->
+                    {% if restaurant.description %}
+                        <p class="text-gray-600 text-sm text-center mb-4">{{ restaurant.description }}</p>
+                    {% else %}
+                        <p class="text-gray-400 text-sm text-center mb-4">No description available</p>
+                    {% endif %}
                     
-                    <div class="mt-2">
-                        <a href="{% url 'place_order' restaurant.id %}" class="bg-green-500 text-white px-4 py-2 rounded-lg inline-block">
+                    <div class="text-center">
+                        <a href="{% url 'place_order' restaurant.id %}" class="bg-green-500 text-white px-6 py-2 rounded-lg inline-block">
                             Order Now
                         </a>
                     </div>
-                </li>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 {% endblock %}

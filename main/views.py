@@ -22,7 +22,7 @@ def register(request):
     return render(request, 'main/register.html', {'form': form})
 
 def restaurant_list(request):
-    restaurants = Restaurant.objects.values("id", "name")  # Optimize query
+    restaurants = Restaurant.objects.values("id", "name")  # Optimize query to only get required fields
     return render(request, 'main/restaurant_list.html', {'restaurants': restaurants})
 
 def restaurant_detail(request, restaurant_id):
@@ -36,16 +36,25 @@ def place_order(request, restaurant_id):
     if request.method == "POST":
         item_ids = request.POST.getlist("items")
         items = MenuItem.objects.filter(id__in=item_ids)
+        
+        if not items:
+            messages.error(request, "No items selected. Please choose at least one item.")
+            return redirect("menu", restaurant_id=restaurant_id)
+
         total_price = sum(item.price for item in items)
 
+        # Create the order first (without adding items yet)
         order = Order.objects.create(user=request.user, restaurant=restaurant, total_price=total_price)
+
+        # Add items to the order using the ManyToMany relationship
         order.items.set(items)
         order.save()
 
         messages.success(request, "Order placed successfully!")
         return redirect("order_history")
 
-    return redirect("menu", restaurant_id=restaurant_id)  # Ensure menu supports restaurant_id
+    # If it's not a POST request, redirect back to the menu
+    return redirect("menu", restaurant_id=restaurant_id)
 
 @login_required
 def order_history(request):
@@ -73,14 +82,10 @@ def order_summary(request, order_id):
 
     return render(request, 'main/order_summary.html', {'order': order, 'form': form})
 
-def menu_view(request, restaurant_id=None):
-    if restaurant_id:
-        # If a restaurant is specified, show its menu
-        restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-        menu_items = restaurant.menu_items.all()
-    else:
-        # If no restaurant is specified, show all menu items
-        restaurant = None
-        menu_items = MenuItem.objects.all()
+def menu_view(request, restaurant_id):
+    # Always expects a restaurant_id in the URL
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    menu_items = restaurant.menu_items.all()
 
     return render(request, 'main/menu.html', {'restaurant': restaurant, 'menu_items': menu_items})
+

@@ -3,19 +3,29 @@
 {% block content %}
     {% if restaurant %}
         <h2>Menu for {{ restaurant.name }}</h2>
-        
+        {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-20 h-20 object-cover ml-4">
+        {% else %}
+            <p>No image available</p>
+        {% endif %}    
         <form method="POST" action="{% url 'place_order' restaurant.id %}">
             {% csrf_token %}
-            <ul>
+            <h3 class="text-2xl mb-4">Menu</h3>
+            <ul class="space-y-4">
                 {% for item in menu_items %}
-                    <li>
-                        <input type="checkbox" name="items" value="{{ item.id }}"> 
-                        <strong>{{ item.name }}</strong> - ${{ item.price }}
+                    <li class="bg-gray-100 p-4 rounded-lg">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="items" value="{{ item.id }}" class="mr-2">
+                            <span>{{ item.name }} - ₹{{ item.price }}</span>
+                        </label>
                     </li>
                 {% endfor %}
             </ul>
-            <button type="submit" class="btn">Place Order</button>
-        </form>
+            
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 mt-4 rounded-lg">
+                Place Order
+            </button>
+        </form>        
 
         <a href="{% url 'restaurant_list' %}" class="back-link">← Back to Restaurants</a>
     {% else %}
