@@ -1,39 +1,69 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Restaurants - StayNDine{% endblock %}
 
 {% block content %}
-    <div class="max-w-6xl mx-auto p-6">
-        <h2 class="text-3xl font-semibold mb-6 text-center">Restaurants</h2>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for restaurant in restaurants %}
-                <div class="bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                    <!-- Restaurant Image -->
-                    {% if restaurant.image %}
-                        <img src="{{ restaurant.image }}" alt="{{ restaurant.name }}" class="w-full h-40 object-cover rounded-lg mb-4">
-                    {% else %}
-                        <div class="w-full h-40 bg-gray-300 flex items-center justify-center text-white rounded-lg mb-4">No Image Available</div>
-                    {% endif %}
-                    
-                    <h3 class="text-xl font-semibold text-center mb-2">
-                        <a href="{% url 'restaurant_detail' restaurant.id %}" class="text-blue-500 hover:underline">
-                            {{ restaurant.name }}
-                        </a>
-                    </h3>
+<div class="max-w-6xl mx-auto p-6">
+    <h2 class="text-3xl font-semibold mb-6 text-center">Our Restaurants</h2>
 
-                    <!-- Restaurant Description (show on hover) -->
-                    {% if restaurant.description %}
-                        <p class="text-gray-600 text-sm text-center mb-4">{{ restaurant.description }}</p>
-                    {% else %}
-                        <p class="text-gray-400 text-sm text-center mb-4">No description available</p>
-                    {% endif %}
-                    
-                    <div class="text-center">
-                        <a href="{% url 'place_order' restaurant.id %}" class="bg-green-500 text-white px-6 py-2 rounded-lg inline-block">
-                            Order Now
-                        </a>
-                    </div>
-                </div>
-            {% endfor %}
+    {% if messages %}
+    <div class="mb-6">
+        {% for message in messages %}
+        <div class="p-4 {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'info' %}bg-blue-100 text-blue-700{% else %}bg-yellow-100 text-yellow-700{% endif %} rounded-lg">
+            {{ message }}
         </div>
+        {% endfor %}
     </div>
+    {% endif %}
+    
+    {% if restaurants %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for restaurant in restaurants %}
+        <div class="bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
+            <!-- Restaurant Image -->
+            {% if restaurant.image %}
+            <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" class="w-full h-48 object-cover rounded-lg mb-4">
+            {% else %}
+            <div class="w-full h-48 bg-gray-200 flex items-center justify-center rounded-lg mb-4">
+                <span class="text-gray-500">No Image Available</span>
+            </div>
+            {% endif %}
+            
+            <!-- Restaurant Name -->
+            <h3 class="text-xl font-semibold text-center mb-2">
+                <a href="{% url 'restaurant_detail' restaurant.id %}" class="text-blue-600 hover:text-blue-800 hover:underline">
+                    {{ restaurant.name }}
+                </a>
+            </h3>
+
+            <!-- Location -->
+            <p class="text-gray-600 text-center mb-2">{{ restaurant.location }}</p>
+
+            <!-- Description -->
+            <p class="text-gray-600 text-sm text-center mb-4">
+                {{ restaurant.description|truncatewords:20|default:"No description available" }}
+            </p>
+            
+            <!-- Action Buttons -->
+            <div class="flex justify-center space-x-3">
+                <a href="{% url 'restaurant_detail' restaurant.id %}" 
+                   class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    View Details
+                </a>
+                <a href="{% url 'place_order' restaurant.id %}" 
+                   class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                    Order Now
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-8">
+        <p class="text-gray-600 text-lg">No restaurants available at the moment.</p>
+        <p class="text-gray-500 mt-2">Please check back later.</p>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
