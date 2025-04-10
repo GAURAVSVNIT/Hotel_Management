@@ -1,12 +1,65 @@
 {% extends 'main/base.html' %}
+{% load static %}
 
-{% block title %}Home - Hotel Management{% endblock %}
+{% block title %}Home - Eatsy{% endblock %}
 
 {% block content %}
-    <div class="home-container">
-        <h2>Welcome to the Best Hotel Management App</h2>
-        <p>Explore multiple restaurants, order food, and track your orders easily!</p>
-        
-        <a href="{% url 'restaurant_list' %}" class="btn">Explore Restaurants</a>
+<!-- Hero Section -->
+<div class="hero">
+    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=2070" alt="Hero" class="hero-image">
+    <div class="hero-content">
+        <h2 class="hero-title">Discover the Best Food in Town</h2>
+        <p class="hero-subtitle">Order from over 1,000+ restaurants with fast delivery</p>
+        <button class="primary-button">Order Now</button>
     </div>
+</div>
+
+<!-- Features -->
+<div class="features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-card">
+                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <h3 class="feature-title">Fast Delivery</h3>
+                <p class="feature-description">Get your food delivered in under 30 minutes</p>
+            </div>
+            <div class="feature-card">
+                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 
+                    5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                <h3 class="feature-title">Best Quality</h3>
+                <p class="feature-description">We partner with only the best restaurants</p>
+            </div>
+            <div class="feature-card">
+                <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 
+                    7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
+                    <line x1="6" y1="17" x2="18" y2="17"/>
+                </svg>
+                <h3 class="feature-title">Top Chefs</h3>
+                <p class="feature-description">Experienced chefs preparing your meals</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Restaurants -->
+<div class="restaurants">
+    <div class="container">
+        <h2 class="section-title">Featured Restaurants</h2>
+        <div class="restaurants-grid" id="restaurantsGrid">
+            <!-- JS can populate restaurant cards dynamically -->
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.so
+
+# Virtual environment
+venv/
+.venv/
+ENV/
+env/
+*.env
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+
+# Static and media files
+/staticfiles/
+/media/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# JetBrains IDEs (e.g., PyCharm)
+.idea/
+
+# Pipenv
+Pipfile.lock
+
+# Migrations
+**/migrations/
+!**/migrations/__init__.py
+
+# Tailwind CSS (if you're using django-tailwind)
+node_modules/
+theme/static_src/
+theme/static/
+
+# Coverage reports
+htmlcov/
+.coverage
+.tox/
+.pytest_cache/
+
+# dotenv
+*.env
+.env.*
+
+# Gunicorn/PID files
+*.pid
+
+# MySQL / Postgres dumps
+*.sql
+*.dump
