@@ -1,5 +1,6 @@
 {% extends 'main/base.html' %}
 {% load static %}
+<<<<<<< HEAD
 
 {% block content %}
 <div class="max-w-6xl mx-auto p-6">
@@ -88,3 +89,49 @@
     </div>
 </div>
 {% endblock %}
+=======
+
+{% block title %}{{ restaurant.name }} - Details{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-6">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <!-- Restaurant Image -->
+        {% if restaurant.image %}
+            <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" class="w-full h-64 object-cover">
+        {% else %}
+            <div class="w-full h-64 bg-gray-300 flex items-center justify-center">
+                <span class="text-gray-500">No Image Available</span>
+            </div>
+        {% endif %}
+
+        <div class="p-6">
+            <!-- Restaurant Name -->
+            <h1 class="text-3xl font-bold mb-4">{{ restaurant.name }}</h1>
+
+            <!-- Location -->
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold text-gray-700">Location</h2>
+                <p class="text-gray-600">{{ restaurant.location }}</p>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold text-gray-700">About</h2>
+                <p class="text-gray-600">{{ restaurant.description|default:"No description available." }}</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-4">
+                <a href="{% url 'place_order' restaurant.id %}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    Place Order
+                </a>
+                <a href="{% url 'restaurant_list' %}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition duration-300">
+                    Back to Restaurants
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+>>>>>>> c9ae65cf69dd3629077ab35cd53a31de1f0e5e18
