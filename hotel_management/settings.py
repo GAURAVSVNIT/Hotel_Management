@@ -28,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Set to True to enable media file debugging
+MEDIA_DEBUG = True
+
 
 # Application definition
 
@@ -61,18 +64,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'hotel_management.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
-        'OPTIONS': 
-        {
-            'context_processors': 
-            [
+        'OPTIONS': {
+            'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -129,8 +131,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -138,12 +138,27 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Static Files Configuration
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']  # Wherdce you store static files
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Where you store static files
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Collect static files for production
 
 # Media Files Configuration
 MEDIA_URL = '/media/'  
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # BASE_DIR = path to hotel_management/
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path where media is stored
+
+# Security Settings (adjusted for development)
+SECURE_CONTENT_TYPE_NOSNIFF = False  # Allow proper MIME type detection for files
+X_FRAME_OPTIONS = 'SAMEORIGIN'  # Allow frames from same origin
+
+# File Upload Settings
+FILE_UPLOAD_PERMISSIONS = 0o644  # Permissions for uploaded files
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755  # Permissions for created directories
+
+# Add common MIME types
+import mimetypes
+mimetypes.add_type("image/png", ".png", True)
+mimetypes.add_type("image/jpeg", ".jpg", True)
+mimetypes.add_type("image/jpeg", ".jpeg", True)
+mimetypes.add_type("image/webp", ".webp", True)
 
 # Authentication Redirections
 LOGIN_URL = 'login'              # Where to go when login is required

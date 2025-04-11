@@ -29,12 +29,12 @@ class Coupon(models.Model):
     valid_from = models.DateTimeField()
     valid_to = models.DateTimeField()
     is_active = models.BooleanField(default=True)
-
+        
     def save(self, *args, **kwargs):
         if not self.code:
             self.code = str(uuid.uuid4())[:8].upper()
         super().save(*args, **kwargs)
-
+    
     def is_valid(self):
         now = timezone.now()
         return self.is_active and self.valid_from <= now <= self.valid_to
@@ -60,8 +60,14 @@ class Order(models.Model):
     coupon = models.ForeignKey(Coupon, null=True, blank=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.skip_price_calculation = False
+
     def save(self, *args, **kwargs):
-        self.total_price = sum(item.price for item in self.items.all())
+        # Only calculate total price if we're not skipping price calculation
+        if not hasattr(self, 'skip_price_calculation') or not self.skip_price_calculation:
+            self.total_price = sum(item.price for item in self.items.all())
         if not self.user and not self.guest_id:
             self.guest_id = uuid.uuid4()
         super().save(*args, **kwargs)

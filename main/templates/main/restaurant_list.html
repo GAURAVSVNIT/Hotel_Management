@@ -4,45 +4,6 @@
 {% block title %}Restaurants - StayNDine{% endblock %}
 
 {% block content %}
-<<<<<<< HEAD
-    <div class="max-w-6xl mx-auto p-6">
-        <h2 class="text-3xl font-semibold mb-6 text-center">Restaurants</h2>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for restaurant in restaurants %}
-                <div class="bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 group relative h-full">
-                    <!-- Restaurant Image -->
-                    {% if restaurant.image %}
-                        <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" class="w-full h-40 object-cover rounded-lg mb-4">
-                    {% else %}
-                        <div class="w-full h-40 bg-gray-300 flex items-center justify-center text-white rounded-lg mb-4">No Image Available</div>
-                    {% endif %}
-                    
-                    <h3 class="text-xl font-semibold text-center mb-2">
-                        <a href="{% url 'restaurant_detail' restaurant.id %}" class="text-blue-500 hover:underline">
-                            {{ restaurant.name }}
-                        </a>
-                    </h3>
-
-                    <!-- Restaurant Description (only shown on hover) -->
-                    {% if restaurant.description %}
-                        <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-300 opacity-0 group-hover:opacity-100 mb-4">
-                            <p class="text-gray-600 text-sm text-center">{{ restaurant.description }}</p>
-                        </div>
-                    {% else %}
-                        <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-300 opacity-0 group-hover:opacity-100 mb-4">
-                            <p class="text-gray-400 text-sm text-center">No description available</p>
-                        </div>
-                    {% endif %}
-                    
-                    <div class="text-center mt-auto">
-                        <a href="{% url 'menu' restaurant.id %}" class="bg-green-500 text-white px-6 py-2 rounded-lg inline-block">
-                            View Menu
-                        </a>
-                    </div>
-                </div>
-            {% endfor %}
-=======
 <div class="max-w-6xl mx-auto p-6">
     <h2 class="text-3xl font-semibold mb-6 text-center">Our Restaurants</h2>
 
@@ -51,13 +12,9 @@
         {% for message in messages %}
         <div class="p-4 {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'info' %}bg-blue-100 text-blue-700{% else %}bg-yellow-100 text-yellow-700{% endif %} rounded-lg">
             {{ message }}
->>>>>>> c9ae65cf69dd3629077ab35cd53a31de1f0e5e18
         </div>
         {% endfor %}
     </div>
-<<<<<<< HEAD
-{% endblock %}
-=======
     {% endif %}
     
     {% if restaurants %}
@@ -110,4 +67,3 @@
     {% endif %}
 </div>
 {% endblock %}
->>>>>>> c9ae65cf69dd3629077ab35cd53a31de1f0e5e18

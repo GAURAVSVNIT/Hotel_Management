@@ -1,81 +1,115 @@
 {% extends 'main/base.html' %}
 {% load static %}
-<<<<<<< HEAD
+
+{% block title %}{{ restaurant.name }} - Details{% endblock %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto p-6">
     <!-- Restaurant Header Section -->
-    <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ restaurant.name }}</h1>
-        <div class="max-w-2xl mx-auto">
-            {% if restaurant.image %}
-            <img src="{{ restaurant.image.url }}" 
-                 alt="{{ restaurant.name }}" 
-                 class="w-full h-64 object-cover rounded-xl shadow-lg mb-6">
-            {% else %}
-            <div class="w-full h-64 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400">
-                No restaurant image available
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-12">
+        <!-- Restaurant Image -->
+        {% if restaurant.image %}
+        <img src="{{ restaurant.image.url }}" 
+             alt="{{ restaurant.name }}" 
+             class="w-full h-64 object-cover">
+        {% else %}
+        <div class="w-full h-64 bg-gray-100 flex items-center justify-center text-gray-400">
+            <span>No restaurant image available</span>
+        </div>
+        {% endif %}
+        
+        <div class="p-6 text-center">
+            <!-- Restaurant Name -->
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ restaurant.name }}</h1>
+            
+            <!-- Location -->
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold text-gray-700">Location</h2>
+                <p class="text-gray-600">{{ restaurant.location }}</p>
             </div>
-            {% endif %}
-            <p class="text-gray-600 text-lg mb-4">{{ restaurant.description }}</p>
-            <p class="text-gray-500"><span class="font-semibold">Location:</span> {{ restaurant.location }}</p>
+            
+            <!-- Description -->
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold text-gray-700">About</h2>
+                <p class="text-gray-600">{{ restaurant.description|default:"No description available." }}</p>
+            </div>
         </div>
     </div>
 
-    <!-- Menu Items Grid -->
-    <h2 class="text-3xl font-bold text-center mb-8">Menu Items</h2>
-    <form method="POST" action="{% url 'place_order' restaurant.id %}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% csrf_token %}
+    <!-- Menu Section -->
+    <div class="bg-gray-50 rounded-lg p-8 mb-8">
+        <h2 class="text-3xl font-bold text-center mb-8">Our Menu</h2>
         
-        {% for item in restaurant.menuitem_set.all %}
-        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 group relative">
-            <!-- Image with Hover Overlay -->
-            <div class="relative overflow-hidden rounded-t-xl">
-                {% if item.image %}
-                <img src="{{ item.image.url }}" 
-                     alt="{{ item.name }}" 
-                     class="w-full h-48 object-cover transform transition-transform duration-300 group-hover:scale-105">
-                {% else %}
-                <div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">
-                    No item image
+        {% if menu_items %}
+        <form method="POST" action="{% url 'place_order' restaurant.id %}" class="space-y-8">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for item in menu_items %}
+                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 group relative">
+                    <!-- Image with Hover Overlay -->
+                    <div class="relative overflow-hidden rounded-t-xl">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" 
+                             alt="{{ item.name }}" 
+                             class="w-full h-48 object-cover transform transition-transform duration-300 group-hover:scale-105">
+                        {% else %}
+                        <div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">
+                            <span>No item image</span>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Hover Description -->
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center p-4">
+                            <p class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center text-sm">
+                                {{ item.description|default:"No description available" }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Item Details -->
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold mb-2">{{ item.name }}</h3>
+                        <p class="text-lg text-green-600 font-bold mb-4">₹{{ item.price }}</p>
+                        
+                        <!-- Quantity Selector -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">Quantity:</span>
+                            <div class="flex items-center">
+                                <button type="button" 
+                                        class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-l-md transition-colors" 
+                                        onclick="changeQuantity(this, -1)">−</button>
+                                <input type="number" 
+                                       name="quantity_{{ item.id }}" 
+                                       value="0" 
+                                       min="0" 
+                                       class="w-14 text-center border-y border-gray-300 py-1"
+                                       readonly>
+                                <button type="button" 
+                                        class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-r-md transition-colors" 
+                                        onclick="changeQuantity(this, 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                {% endif %}
-                
-                <!-- Hover Description -->
-                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center p-4">
-                    <p class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center text-sm">
-                        {{ item.description|default:"No description available" }}
-                    </p>
-                </div>
+                {% endfor %}
             </div>
 
-            <!-- Item Details -->
-            <div class="p-4">
-                <h3 class="text-xl font-semibold mb-2">{{ item.name }}</h3>
-                <p class="text-lg text-green-600 font-bold mb-4">₹{{ item.price }}</p>
-                
-                <!-- Quantity Selector -->
-                <div class="flex items-center justify-between">
-                    <label class="text-gray-600">Quantity:</label>
-                    <input type="number" 
-                           name="item_{{ item.id }}" 
-                           value="0" 
-                           min="0" 
-                           class="w-20 px-2 py-1 border rounded-md text-center"
-                           data-price="{{ item.price }}">
-                </div>
+            <!-- Order Button -->
+            <div class="text-center mt-8">
+                <button type="submit" 
+                        id="place-order-btn"
+                        class="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold">
+                    Place Order
+                </button>
             </div>
+        </form>
+        {% else %}
+        <div class="text-center py-8">
+            <p class="text-gray-600 text-lg">No menu items available for this restaurant.</p>
+            <p class="text-gray-500 mt-2">Please check back later.</p>
         </div>
-        {% endfor %}
-
-        <!-- Order Button -->
-        <div class="col-span-full text-center mt-8">
-            <button type="submit" 
-                    class="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-300 text-lg font-semibold">
-                Place Order
-            </button>
-        </div>
-    </form>
+        {% endif %}
+    </div>
 
     <!-- Back Button -->
     <div class="mt-8 text-center">
@@ -88,50 +122,60 @@
         </a>
     </div>
 </div>
+
+<!-- JavaScript for quantity selection -->
+<script>
+    function changeQuantity(button, change) {
+        const input = button.parentNode.querySelector('input');
+        const currentValue = parseInt(input.value);
+        const newValue = Math.max(0, currentValue + change);
+        
+        input.value = newValue;
+        
+        // Update order button state
+        updateOrderButton();
+    }
+    
+    function updateOrderButton() {
+        const quantityInputs = document.querySelectorAll('input[type="number"]');
+        const orderButton = document.getElementById('place-order-btn');
+        
+        let hasItems = false;
+        quantityInputs.forEach(input => {
+            if (parseInt(input.value) > 0) {
+                hasItems = true;
+            }
+        });
+        
+        if (hasItems) {
+            orderButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            orderButton.disabled = false;
+        } else {
+            orderButton.classList.add('opacity-50', 'cursor-not-allowed');
+            orderButton.disabled = true;
+        }
+    }
+    
+    // Form submission validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const quantityInputs = document.querySelectorAll('input[type="number"]');
+        let hasItems = false;
+        
+        quantityInputs.forEach(input => {
+            if (parseInt(input.value) > 0) {
+                hasItems = true;
+            }
+        });
+        
+        if (!hasItems) {
+            e.preventDefault();
+            alert('Please select at least one item to place an order.');
+        }
+    });
+    
+    // Initialize button state on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateOrderButton();
+    });
+</script>
 {% endblock %}
-=======
-
-{% block title %}{{ restaurant.name }} - Details{% endblock %}
-
-{% block content %}
-<div class="max-w-4xl mx-auto p-6">
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-        <!-- Restaurant Image -->
-        {% if restaurant.image %}
-            <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" class="w-full h-64 object-cover">
-        {% else %}
-            <div class="w-full h-64 bg-gray-300 flex items-center justify-center">
-                <span class="text-gray-500">No Image Available</span>
-            </div>
-        {% endif %}
-
-        <div class="p-6">
-            <!-- Restaurant Name -->
-            <h1 class="text-3xl font-bold mb-4">{{ restaurant.name }}</h1>
-
-            <!-- Location -->
-            <div class="mb-4">
-                <h2 class="text-lg font-semibold text-gray-700">Location</h2>
-                <p class="text-gray-600">{{ restaurant.location }}</p>
-            </div>
-
-            <!-- Description -->
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-700">About</h2>
-                <p class="text-gray-600">{{ restaurant.description|default:"No description available." }}</p>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex space-x-4">
-                <a href="{% url 'place_order' restaurant.id %}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
-                    Place Order
-                </a>
-                <a href="{% url 'restaurant_list' %}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition duration-300">
-                    Back to Restaurants
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
->>>>>>> c9ae65cf69dd3629077ab35cd53a31de1f0e5e18
