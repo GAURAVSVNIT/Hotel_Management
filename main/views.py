@@ -1,28 +1,34 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
-from .models import Restaurant, Order, MenuItem, Coupon
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import CouponApplyForm
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from .models import Restaurant
 
 def home(request):
     return render(request, 'main/home.html')
+
+def logout_view(request):
+    """
+    Custom logout view that handles both GET and POST requests.
+    """
+    logout(request)
+    return redirect('home')
 
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # Auto-login after registration
-            return redirect('home')
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}. You can now log in.')
+            return redirect('login')
     else:
         form = UserCreationForm()
-    
     return render(request, 'main/register.html', {'form': form})
 
 def restaurant_list(request):
-    restaurants = Restaurant.objects.values("id", "name")  # Optimize query to only get required fields
+    restaurants = Restaurant.objects.all()
     return render(request, 'main/restaurant_list.html', {'restaurants': restaurants})
 
 def restaurant_detail(request, restaurant_id):
@@ -32,60 +38,6 @@ def restaurant_detail(request, restaurant_id):
 @login_required
 def place_order(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-
-    if request.method == "POST":
-        item_ids = request.POST.getlist("items")
-        items = MenuItem.objects.filter(id__in=item_ids)
-        
-        if not items:
-            messages.error(request, "No items selected. Please choose at least one item.")
-            return redirect("menu", restaurant_id=restaurant_id)
-
-        total_price = sum(item.price for item in items)
-
-        # Create the order first (without adding items yet)
-        order = Order.objects.create(user=request.user, restaurant=restaurant, total_price=total_price)
-
-        # Add items to the order using the ManyToMany relationship
-        order.items.set(items)
-        order.save()
-
-        messages.success(request, "Order placed successfully!")
-        return redirect("order_history")
-
-    # If it's not a POST request, redirect back to the menu
-    return redirect("menu", restaurant_id=restaurant_id)
-
-@login_required
-def order_history(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'main/order_history.html', {'orders': orders})
-
-@login_required
-def order_summary(request, order_id):
-    order = get_object_or_404(Order, id=order_id, user=request.user)  # Secure lookup
-
-    form = CouponApplyForm(request.POST or None)
-    
-    if request.method == 'POST' and form.is_valid():
-        code = form.cleaned_data['code']
-        try:
-            coupon = Coupon.objects.get(code=code, is_active=True)
-            if coupon.is_valid():
-                order.coupon = coupon
-                order.apply_coupon()
-                messages.success(request, f"Coupon '{coupon.code}' applied! Discount: {coupon.discount_percentage}%")
-            else:
-                messages.error(request, "Coupon expired or invalid.")
-        except Coupon.DoesNotExist:
-            messages.error(request, "Invalid coupon code.")
-
-    return render(request, 'main/order_summary.html', {'order': order, 'form': form})
-
-def menu_view(request, restaurant_id):
-    # Always expects a restaurant_id in the URL
-    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-    menu_items = restaurant.menu_items.all()
-
-    return render(request, 'main/menu.html', {'restaurant': restaurant, 'menu_items': menu_items})
-
+    # For now, just redirect to restaurant detail page
+    messages.info(request, 'Order placement will be implemented soon!')
+    return redirect('restaurant_detail', restaurant_id=restaurant_id)
