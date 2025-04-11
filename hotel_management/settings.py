@@ -134,8 +134,8 @@ STATICFILES_DIRS = [BASE_DIR / 'static']  # Wherdce you store static files
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Collect static files for production
 
 # Media Files Configuration
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Store uploaded files
+MEDIA_URL = '/media/'  
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # BASE_DIR = path to hotel_management/
 
 # Authentication Redirections
 LOGIN_URL = 'login'              # Where to go when login is required

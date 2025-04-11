@@ -6,10 +6,10 @@
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for restaurant in restaurants %}
-                <div class="bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                <div class="bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 group relative h-full">
                     <!-- Restaurant Image -->
                     {% if restaurant.image %}
-                        <img src="{{ restaurant.image }}" alt="{{ restaurant.name }}" class="w-full h-40 object-cover rounded-lg mb-4">
+                        <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" class="w-full h-40 object-cover rounded-lg mb-4">
                     {% else %}
                         <div class="w-full h-40 bg-gray-300 flex items-center justify-center text-white rounded-lg mb-4">No Image Available</div>
                     {% endif %}
@@ -20,16 +20,20 @@
                         </a>
                     </h3>
 
-                    <!-- Restaurant Description (show on hover) -->
+                    <!-- Restaurant Description (only shown on hover) -->
                     {% if restaurant.description %}
-                        <p class="text-gray-600 text-sm text-center mb-4">{{ restaurant.description }}</p>
+                        <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-300 opacity-0 group-hover:opacity-100 mb-4">
+                            <p class="text-gray-600 text-sm text-center">{{ restaurant.description }}</p>
+                        </div>
                     {% else %}
-                        <p class="text-gray-400 text-sm text-center mb-4">No description available</p>
+                        <div class="h-0 overflow-hidden group-hover:h-auto transition-all duration-300 opacity-0 group-hover:opacity-100 mb-4">
+                            <p class="text-gray-400 text-sm text-center">No description available</p>
+                        </div>
                     {% endif %}
                     
-                    <div class="text-center">
-                        <a href="{% url 'place_order' restaurant.id %}" class="bg-green-500 text-white px-6 py-2 rounded-lg inline-block">
-                            Order Now
+                    <div class="text-center mt-auto">
+                        <a href="{% url 'menu' restaurant.id %}" class="bg-green-500 text-white px-6 py-2 rounded-lg inline-block">
+                            View Menu
                         </a>
                     </div>
                 </div>

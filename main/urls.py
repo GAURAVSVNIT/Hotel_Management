@@ -23,6 +23,7 @@ urlpatterns = [
     #path('order/', views.place_order, name='order_without_restaurant'),  # Allows placing orders without a restaurant
     path('orders/', views.order_history, name='order_history'),
     path('order/<int:order_id>/', views.order_summary, name='order_summary'),
+    path('checkout/<int:order_id>/', views.checkout, name='checkout'),
 
     # Password Reset
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),

@@ -118,6 +118,20 @@ form li {
     text-decoration: underline;
 }
 
+/* Smooth transitions */
+.transition-transform {
+    transition: transform 0.3s ease;
+}
+
+.group:hover .group-hover\:scale-105 {
+    transform: scale(1.05);
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+    accent-color: #3b82f6; /* Match blue-500 */
+}
+
 /* === Order History Page (order_history.html) === */
 .status {
     font-weight: bold;
@@ -177,6 +191,31 @@ form input[type="text"] {
     text-decoration: none;
     color: #1d4ed8;
     font-weight: 500;
+}
+
+/* Hover effects */
+.group:hover .group-hover\:scale-105 {
+    transform: scale(1.05);
+}
+
+/* Transition timing */
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+/* Quantity input styling */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.group:hover .group-hover\:scale-105 {
+    transform: scale(1.05);
+}
+
+.transition-all {
+    transition: all 0.3s ease;
 }
 
 /* === Responsive === */
