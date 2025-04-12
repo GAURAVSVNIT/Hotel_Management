@@ -1,181 +1,84 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
-{% block title %}{{ restaurant.name }} - Details{% endblock %}
+{% block title %}{{ restaurant.name }} - DineEase{% endblock %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto p-6">
-    <!-- Restaurant Header Section -->
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-12">
-        <!-- Restaurant Image -->
-        {% if restaurant.image %}
-        <img src="{{ restaurant.image.url }}" 
-             alt="{{ restaurant.name }}" 
-             class="w-full h-64 object-cover">
-        {% else %}
-        <div class="w-full h-64 bg-gray-100 flex items-center justify-center text-gray-400">
-            <span>No restaurant image available</span>
+    <!-- Restaurant Header -->
+    <div class="mb-8">
+        <div class="relative h-[300px] rounded-xl overflow-hidden mb-6">
+            {% if restaurant.image %}
+            <img src="{{ restaurant.image.url }}" 
+                 alt="{{ restaurant.name }}" 
+                 class="w-full h-full object-cover">
+            {% else %}
+            <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                <span class="text-gray-500">No Image Available</span>
+            </div>
+            {% endif %}
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                <div class="p-6 w-full">
+                    <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">{{ restaurant.name }}</h1>
+                    <p class="text-white/90 mb-2">{{ restaurant.location }}</p>
+                    <span class="inline-block bg-orange-500 text-white px-3 py-1 rounded-full text-sm">
+                        {{ restaurant.get_cuisine_display }}
+                    </span>
+                </div>
+            </div>
         </div>
-        {% endif %}
         
-        <div class="p-6 text-center">
-            <!-- Restaurant Name -->
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ restaurant.name }}</h1>
-            
-            <!-- Location -->
-            <div class="mb-4">
-                <h2 class="text-lg font-semibold text-gray-700">Location</h2>
-                <p class="text-gray-600">{{ restaurant.location }}</p>
-            </div>
-            
-            <!-- Description -->
-            <div class="mb-4">
-                <h2 class="text-lg font-semibold text-gray-700">About</h2>
-                <p class="text-gray-600">{{ restaurant.description|default:"No description available." }}</p>
-            </div>
-        </div>
+        <p class="text-gray-600 text-lg mb-6">{{ restaurant.description }}</p>
     </div>
 
-    <!-- Menu Section -->
-    <div class="bg-gray-50 rounded-lg p-8 mb-8">
-        <h2 class="text-3xl font-bold text-center mb-8">Our Menu</h2>
-        
-        {% if menu_items %}
-        <form method="POST" action="{% url 'place_order' restaurant.id %}" class="space-y-8">
-            {% csrf_token %}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for item in menu_items %}
-                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 group relative">
-                    <!-- Image with Hover Overlay -->
-                    <div class="relative overflow-hidden rounded-t-xl">
-                        {% if item.image %}
-                        <img src="{{ item.image.url }}" 
-                             alt="{{ item.name }}" 
-                             class="w-full h-48 object-cover transform transition-transform duration-300 group-hover:scale-105">
-                        {% else %}
-                        <div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">
-                            <span>No item image</span>
-                        </div>
-                        {% endif %}
-                        
-                        <!-- Hover Description -->
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center p-4">
-                            <p class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center text-sm">
-                                {{ item.description|default:"No description available" }}
-                            </p>
-                        </div>
-                    </div>
+    {% if messages %}
+    <div class="mb-6">
+        {% for message in messages %}
+        <div class="p-4 {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'info' %}bg-orange-100 text-orange-700{% else %}bg-yellow-100 text-yellow-700{% endif %} rounded-lg">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-                    <!-- Item Details -->
-                    <div class="p-4">
-                        <h3 class="text-xl font-semibold mb-2">{{ item.name }}</h3>
-                        <p class="text-lg text-green-600 font-bold mb-4">₹{{ item.price }}</p>
-                        
-                        <!-- Quantity Selector -->
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700">Quantity:</span>
-                            <div class="flex items-center">
-                                <button type="button" 
-                                        class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-l-md transition-colors" 
-                                        onclick="changeQuantity(this, -1)">−</button>
-                                <input type="number" 
-                                       name="quantity_{{ item.id }}" 
-                                       value="0" 
-                                       min="0" 
-                                       class="w-14 text-center border-y border-gray-300 py-1"
-                                       readonly>
-                                <button type="button" 
-                                        class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-r-md transition-colors" 
-                                        onclick="changeQuantity(this, 1)">+</button>
-                            </div>
-                        </div>
+    <!-- Menu Items -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-6">Menu</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in menu_items %}
+            <div class="bg-white rounded-xl shadow-md overflow-hidden {% if request.GET.highlight == item.id|stringformat:'s' %}ring-2 ring-orange-500{% endif %}">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" 
+                     alt="{{ item.name }}" 
+                     class="w-full h-48 object-cover">
+                {% else %}
+                <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                    <span class="text-gray-400">No image available</span>
+                </div>
+                {% endif %}
+                
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2">{{ item.name }}</h3>
+                    <p class="text-gray-600 text-sm mb-4">{{ item.description }}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-orange-600 font-bold">₹{{ item.price }}</span>
+                        <form method="post" action="{% url 'place_order' restaurant.id %}" class="inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity_{{ item.id }}" value="1">
+                            <button type="submit" 
+                                    class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300">
+                                Add to Order
+                            </button>
+                        </form>
                     </div>
                 </div>
-                {% endfor %}
             </div>
-
-            <!-- Order Button -->
-            <div class="text-center mt-8">
-                <button type="submit" 
-                        id="place-order-btn"
-                        class="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold">
-                    Place Order
-                </button>
+            {% empty %}
+            <div class="col-span-full text-center py-8">
+                <p class="text-gray-600">No menu items available at the moment.</p>
             </div>
-        </form>
-        {% else %}
-        <div class="text-center py-8">
-            <p class="text-gray-600 text-lg">No menu items available for this restaurant.</p>
-            <p class="text-gray-500 mt-2">Please check back later.</p>
+            {% endfor %}
         </div>
-        {% endif %}
-    </div>
-
-    <!-- Back Button -->
-    <div class="mt-8 text-center">
-        <a href="{% url 'restaurant_list' %}" 
-           class="inline-flex items-center text-gray-600 hover:text-gray-800 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-            </svg>
-            Back to Restaurants
-        </a>
     </div>
 </div>
-
-<!-- JavaScript for quantity selection -->
-<script>
-    function changeQuantity(button, change) {
-        const input = button.parentNode.querySelector('input');
-        const currentValue = parseInt(input.value);
-        const newValue = Math.max(0, currentValue + change);
-        
-        input.value = newValue;
-        
-        // Update order button state
-        updateOrderButton();
-    }
-    
-    function updateOrderButton() {
-        const quantityInputs = document.querySelectorAll('input[type="number"]');
-        const orderButton = document.getElementById('place-order-btn');
-        
-        let hasItems = false;
-        quantityInputs.forEach(input => {
-            if (parseInt(input.value) > 0) {
-                hasItems = true;
-            }
-        });
-        
-        if (hasItems) {
-            orderButton.classList.remove('opacity-50', 'cursor-not-allowed');
-            orderButton.disabled = false;
-        } else {
-            orderButton.classList.add('opacity-50', 'cursor-not-allowed');
-            orderButton.disabled = true;
-        }
-    }
-    
-    // Form submission validation
-    document.querySelector('form').addEventListener('submit', function(e) {
-        const quantityInputs = document.querySelectorAll('input[type="number"]');
-        let hasItems = false;
-        
-        quantityInputs.forEach(input => {
-            if (parseInt(input.value) > 0) {
-                hasItems = true;
-            }
-        });
-        
-        if (!hasItems) {
-            e.preventDefault();
-            alert('Please select at least one item to place an order.');
-        }
-    });
-    
-    // Initialize button state on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        updateOrderButton();
-    });
-</script>
 {% endblock %}

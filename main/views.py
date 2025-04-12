@@ -29,7 +29,18 @@ def register(request):
 
 def restaurant_list(request):
     restaurants = Restaurant.objects.all()
-    return render(request, 'main/restaurant_list.html', {'restaurants': restaurants})
+    
+    # Handle cuisine filtering
+    cuisine = request.GET.get('cuisine')
+    if cuisine:
+        restaurants = restaurants.filter(cuisine=cuisine)
+    
+    context = {
+        'restaurants': restaurants,
+        'cuisines': Restaurant.CUISINE_CHOICES,
+        'selected_cuisine': cuisine
+    }
+    return render(request, 'main/restaurant_list.html', context)
 
 def restaurant_detail(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
@@ -124,3 +135,49 @@ def checkout(request, order_id):
         return redirect('order_history')
     
     return render(request, 'main/checkout.html', {'order': order})
+
+def menu_view(request):
+    """
+    View that shows all menu items from all restaurants in one place.
+    Allows filtering by restaurant and cuisine.
+    """
+    # Get all restaurants for filtering dropdown
+    restaurants = Restaurant.objects.all()
+    
+    # Handle restaurant and cuisine filtering
+    restaurant_id = request.GET.get('restaurant')
+    cuisine = request.GET.get('cuisine')
+    
+    # Start with all menu items
+    menu_items = MenuItem.objects.select_related('restaurant').all()
+    
+    # Apply restaurant filter
+    if restaurant_id:
+        try:
+            restaurant = Restaurant.objects.get(id=restaurant_id)
+            menu_items = menu_items.filter(restaurant=restaurant)
+            filtered_restaurant = restaurant
+        except Restaurant.DoesNotExist:
+            filtered_restaurant = None
+    else:
+        filtered_restaurant = None
+    
+    # Apply cuisine filter
+    if cuisine:
+        menu_items = menu_items.filter(restaurant__cuisine=cuisine)
+    
+    # Group menu items by restaurant
+    menu_by_restaurant = {}
+    for item in menu_items:
+        if item.restaurant not in menu_by_restaurant:
+            menu_by_restaurant[item.restaurant] = []
+        menu_by_restaurant[item.restaurant].append(item)
+    
+    context = {
+        'menu_by_restaurant': menu_by_restaurant,
+        'restaurants': restaurants,
+        'cuisines': Restaurant.CUISINE_CHOICES,
+        'filtered_restaurant': filtered_restaurant,
+        'selected_cuisine': cuisine
+    }
+    return render(request, 'main/menu.html', context)

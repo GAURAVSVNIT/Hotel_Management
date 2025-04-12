@@ -1,0 +1,95 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Menu - DineEase{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="bg-white py-8">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold text-center mb-8">Our Menu</h1>
+        
+        <!-- Filter Section -->
+        <div class="max-w-xl mx-auto mb-8">
+            <form method="get" class="flex gap-4 items-center justify-center">
+                <select name="restaurant" 
+                        class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                    <option value="">All Restaurants</option>
+                    {% for restaurant in restaurants %}
+                    <option value="{{ restaurant.id }}" 
+                            {% if filtered_restaurant.id == restaurant.id %}selected{% endif %}>
+                        {{ restaurant.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" 
+                        class="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition duration-300">
+                    Filter
+                </button>
+                {% if filtered_restaurant %}
+                <a href="{% url 'menu' %}" 
+                   class="text-orange-500 hover:text-orange-600 transition duration-300">
+                    Clear Filter
+                </a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Menu Items Section -->
+<div class="bg-gray-50 py-12">
+    <div class="container mx-auto px-4">
+        {% for restaurant, items in menu_by_restaurant.items %}
+        <div class="mb-12 last:mb-0">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">{{ restaurant.name }}</h2>
+                <a href="{% url 'restaurant_detail' restaurant.id %}" 
+                   class="text-orange-500 hover:text-orange-600 transition duration-300">
+                    View Restaurant
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for item in items %}
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" 
+                         alt="{{ item.name }}" 
+                         class="w-full h-48 object-cover">
+                    {% else %}
+                    <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                        <span class="text-gray-400">No image available</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">{{ item.name }}</h3>
+                        <p class="text-gray-600 text-sm mb-4">{{ item.description|truncatewords:20 }}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-orange-600 font-bold">₹{{ item.price }}</span>
+                            <a href="{% url 'restaurant_detail' restaurant.id %}?highlight={{ item.id }}" 
+                               class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300">
+                                Order Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-12">
+            <p class="text-gray-600 text-lg mb-4">No menu items available.</p>
+            {% if filtered_restaurant %}
+            <a href="{% url 'menu' %}" 
+               class="text-orange-500 hover:text-orange-600 transition duration-300">
+                View all restaurants
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

@@ -1,151 +1,89 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
-{% block title %}Home - StayNDine{% endblock %}
+{% block title %}DineEase - Your Ultimate Dining Destination{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
 <div class="relative h-[600px] overflow-hidden">
-    <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&q=80&w=2070" 
-         alt="Stay and Dine" 
+    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" 
+         alt="DineEase Restaurant Experience" 
          class="w-full h-full object-cover">
     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-black/30 flex items-center justify-center">
         <div class="text-center text-white px-4 max-w-4xl">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">Experience Perfect Stays & Exceptional Dining</h1>
-            <p class="text-xl md:text-2xl mb-8">Your journey to unforgettable experiences starts here</p>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">Experience Exceptional Dining</h1>
+            <p class="text-xl md:text-2xl mb-8">Discover the finest restaurants and cuisines in your city</p>
             <div class="flex flex-col md:flex-row gap-4 justify-center">
-                <a href="#stays" 
-                   class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl transition-all 
-                          transform hover:scale-105 duration-300 text-lg">
-                    Explore Stays
-                </a>
-                <a href="#dining" 
+                <a href="/restaurants" 
                    class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-xl transition-all 
                           transform hover:scale-105 duration-300 text-lg">
-                    Discover Dining
+                    Explore Restaurants
+                </a>
+                <a href="/menu" 
+                   class="bg-white hover:bg-orange-50 text-orange-500 font-bold py-4 px-8 rounded-xl transition-all 
+                          transform hover:scale-105 duration-300 text-lg">
+                    View Menu
                 </a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Featured Section -->
-<div class="py-16 bg-gray-50" id="stays">
+<!-- Featured Restaurants Section -->
+<div class="py-16 bg-white">
     <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12">Featured Stays</h2>
+        <h2 class="text-3xl font-bold text-center mb-12">Featured Restaurants</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Stay Card 1 -->
+            <!-- Zaika Junction -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105">
-                <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791" 
-                     alt="Beach Villa" 
+                <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe" 
+                     alt="Zaika Junction" 
                      class="w-full h-64 object-cover">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold">Ocean View Villa</h3>
-                        <span class="stay-badge">4.9 ★</span>
+                        <h3 class="text-xl font-bold">Zaika Junction</h3>
+                        <span class="restaurant-badge">4.9 ★</span>
                     </div>
-                    <p class="text-gray-600 mb-4">3 bedrooms • Private pool • Direct beach access</p>
+                    <p class="text-gray-600 mb-4">Authentic Indian Cuisine • Fine Dining</p>
                     <div class="flex justify-between items-center">
-                        <span class="text-blue-600 font-bold text-xl">$349/night</span>
-                        <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stay Card 2 -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105">
-                <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304" 
-                     alt="Mountain Cabin" 
-                     class="w-full h-64 object-cover">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold">Alpine Cabin</h3>
-                        <span class="stay-badge">4.8 ★</span>
-                    </div>
-                    <p class="text-gray-600 mb-4">2 bedrooms • Hot tub • Mountain views</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-blue-600 font-bold text-xl">$249/night</span>
-                        <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stay Card 3 -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105">
-                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b" 
-                     alt="City Apartment" 
-                     class="w-full h-64 object-cover">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold">Downtown Loft</h3>
-                        <span class="stay-badge">4.7 ★</span>
-                    </div>
-                    <p class="text-gray-600 mb-4">1 bedroom • Skyline views • Smart home</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-blue-600 font-bold text-xl">$199/night</span>
-                        <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">View Details</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Dining Section -->
-<div class="py-16 bg-white" id="dining">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12">Featured Dining</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Restaurant Card 1 -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105">
-                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9" 
-                     alt="Fine Dining" 
-                     class="w-full h-64 object-cover">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold">The Sunset Terrace</h3>
-                        <span class="dine-badge">4.9 ★</span>
-                    </div>
-                    <p class="text-gray-600 mb-4">Mediterranean • Rooftop • Wine Pairing</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-orange-600 font-bold text-xl">$$$ • Open Now</span>
-                        <a href="#" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">Reserve Table</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Restaurant Card 2 -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105">
-                <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c" 
-                     alt="Street Food" 
-                     class="w-full h-64 object-cover">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold">Night Market Bites</h3>
-                        <span class="dine-badge">4.8 ★</span>
-                    </div>
-                    <p class="text-gray-600 mb-4">Asian Street Food • Late Night • Vegan Options</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-orange-600 font-bold text-xl">$ • Open Now</span>
+                        <span class="text-orange-600 font-bold">₹₹ • Open Now</span>
                         <a href="#" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">View Menu</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Restaurant Card 3 -->
+            <!-- Dragons Wok -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105">
-                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" 
-                     alt="Casual Dining" 
+                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9" 
+                     alt="Dragons Wok" 
                      class="w-full h-64 object-cover">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold">Urban Brew Café</h3>
-                        <span class="dine-badge">4.7 ★</span>
+                        <h3 class="text-xl font-bold">Dragons Wok</h3>
+                        <span class="restaurant-badge">4.8 ★</span>
                     </div>
-                    <p class="text-gray-600 mb-4">Artisan Coffee • Breakfast • Free WiFi</p>
+                    <p class="text-gray-600 mb-4">Chinese Specialties • Asian Fusion</p>
                     <div class="flex justify-between items-center">
-                        <span class="text-orange-600 font-bold text-xl">$$ • Open Now</span>
-                        <a href="#" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">Order Ahead</a>
+                        <span class="text-orange-600 font-bold">₹₹₹ • Open Now</span>
+                        <a href="#" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">View Menu</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baan Thai -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105">
+                <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de" 
+                     alt="Baan Thai" 
+                     class="w-full h-64 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold">Baan Thai</h3>
+                        <span class="restaurant-badge">4.7 ★</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Authentic Thai • Contemporary Setting</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-orange-600 font-bold">₹₹ • Open Now</span>
+                        <a href="#" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">View Menu</a>
                     </div>
                 </div>
             </div>
@@ -153,59 +91,81 @@
     </div>
 </div>
 
-<!-- Combined Deals -->
-<div class="py-16 bg-gradient-to-r from-blue-50 to-orange-50" id="deals">
+<!-- Best Sellers Section -->
+<div class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12">Exclusive Packages</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Stay + Dining Package -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 border-l-8 border-blue-600">
-                <div class="flex items-center mb-4">
-                    <div class="bg-blue-100 p-4 rounded-xl mr-4">
-                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold">Stay & Dine Package</h3>
-                </div>
-                <p class="text-gray-600 mb-6">Book any stay for 3+ nights and get 30% off at participating restaurants</p>
-                <div class="flex items-center justify-between">
-                    <span class="text-blue-600 font-bold text-xl">Save up to $200</span>
-                    <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">View Deals</a>
+        <h2 class="text-3xl font-bold text-center mb-12">Popular Dishes</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Pav Bhaji -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84" 
+                     alt="Pav Bhaji" 
+                     class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2">Pav Bhaji</h3>
+                    <p class="text-gray-600 text-sm">Mumbai's favorite street food</p>
+                    <p class="text-orange-600 font-bold mt-2">₹150</p>
                 </div>
             </div>
 
-            <!-- Experience Package -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 border-l-8 border-orange-500">
-                <div class="flex items-center mb-4">
-                    <div class="bg-orange-100 p-4 rounded-xl mr-4">
-                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold">Ultimate Experience Bundle</h3>
+            <!-- Masala Dosa -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc" 
+                     alt="Masala Dosa" 
+                     class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2">Idli Sambhar</h3>
+                    <p class="text-gray-600 text-sm">South Indian classic</p>
+                    <p class="text-orange-600 font-bold mt-2">₹120</p>
                 </div>
-                <p class="text-gray-600 mb-6">Combine your stay with local experiences and dining credits</p>
-                <div class="flex items-center justify-between">
-                    <span class="text-orange-600 font-bold text-xl">Includes $150 Credit</span>
-                    <a href="#" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">Explore Bundle</a>
+            </div>
+
+            <!-- Manchurian -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246" 
+                     alt="Manchurian" 
+                     class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2">Veg Chowmein</h3>
+                    <p class="text-gray-600 text-sm">Indo-Chinese favorite</p>
+                    <p class="text-orange-600 font-bold mt-2">₹180</p>
+                </div>
+            </div>
+
+            <!-- Pad Thai -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1559314809-0d155014e29e" 
+                     alt="Pad Thai" 
+                     class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2">Pad Thai</h3>
+                    <p class="text-gray-600 text-sm">Classic Thai noodles</p>
+                    <p class="text-orange-600 font-bold mt-2">₹220</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Final CTA -->
-<div class="bg-gradient-to-r from-blue-600 to-orange-500 text-white py-16">
-    <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold mb-6">Start Your Journey Today</h2>
-        <p class="text-xl mb-8">Join thousands of travelers enjoying seamless stays and unforgettable dining</p>
-        <div class="flex flex-col md:flex-row justify-center gap-4">
-            <a href="#" class="bg-white text-blue-600 hover:bg-blue-50 font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105">
-                Create Free Account
-            </a>
-            <a href="#" class="border-2 border-white hover:bg-white/10 font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105">
-                Browse All Listings
+<!-- About Us Section -->
+<div class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-8">About DineEase</h2>
+            <p class="text-gray-600 mb-6">
+                At DineEase, we're passionate about connecting food lovers with the best dining experiences. 
+                Our platform brings together a curated selection of restaurants, offering diverse cuisines 
+                and unforgettable flavors, all at your fingertips.
+            </p>
+            <p class="text-gray-600 mb-8">
+                Whether you're craving authentic Indian delicacies, savoring Chinese specialties, 
+                or exploring Thai cuisine, DineEase is your trusted companion in the world of 
+                exceptional dining.
+            </p>
+            <a href="/restaurants" 
+               class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-xl 
+                      transition-all transform hover:scale-105 duration-300">
+                Explore Our Restaurants
             </a>
         </div>
     </div>

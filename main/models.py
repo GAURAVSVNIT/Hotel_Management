@@ -5,10 +5,22 @@ from django.core.validators import MinValueValidator
 import uuid
 
 class Restaurant(models.Model):
+    CUISINE_CHOICES = [
+        ('indian', 'Indian'),
+        ('chinese', 'Chinese'),
+        ('thai', 'Thai'),
+        ('italian', 'Italian'),
+    ]
+    
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to="restaurants/", blank=True, null=True)
+    cuisine = models.CharField(
+        max_length=20,
+        choices=CUISINE_CHOICES,
+        default='indian'
+    )
 
     def __str__(self):
         return self.name

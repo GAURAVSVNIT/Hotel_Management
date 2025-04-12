@@ -15,6 +15,7 @@ urlpatterns = [
     path('orders/', views.order_history, name='order_history'),
     path('orders/<int:order_id>/', views.order_summary, name='order_summary'),
     path('orders/<int:order_id>/checkout/', views.checkout, name='checkout'),
+    path('menu/', views.menu_view, name='menu'),
 ]
 
 # Add media serving in development

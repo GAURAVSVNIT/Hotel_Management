@@ -1,11 +1,37 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
-{% block title %}Restaurants - StayNDine{% endblock %}
+{% block title %}Restaurants - DineEase{% endblock %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto p-6">
     <h2 class="text-3xl font-semibold mb-6 text-center">Our Restaurants</h2>
+
+    <!-- Cuisine Filter -->
+    <div class="max-w-xl mx-auto mb-8">
+        <form method="get" class="flex gap-4 items-center justify-center">
+            <select name="cuisine" 
+                    class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                <option value="">All Cuisines</option>
+                {% for cuisine_code, cuisine_name in cuisines %}
+                <option value="{{ cuisine_code }}" 
+                        {% if selected_cuisine == cuisine_code %}selected{% endif %}>
+                    {{ cuisine_name }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" 
+                    class="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition duration-300">
+                Filter
+            </button>
+            {% if selected_cuisine %}
+            <a href="{% url 'restaurant_list' %}" 
+               class="text-orange-500 hover:text-orange-600 transition duration-300">
+                Clear Filter
+            </a>
+            {% endif %}
+        </form>
+    </div>
 
     {% if messages %}
     <div class="mb-6">
@@ -32,13 +58,14 @@
             
             <!-- Restaurant Name -->
             <h3 class="text-xl font-semibold text-center mb-2">
-                <a href="{% url 'restaurant_detail' restaurant.id %}" class="text-blue-600 hover:text-blue-800 hover:underline">
+                <a href="{% url 'restaurant_detail' restaurant.id %}" class="text-orange-600 hover:text-orange-800 hover:underline">
                     {{ restaurant.name }}
                 </a>
             </h3>
 
-            <!-- Location -->
+            <!-- Location and Cuisine -->
             <p class="text-gray-600 text-center mb-2">{{ restaurant.location }}</p>
+            <p class="text-sm text-orange-600 text-center mb-2">{{ restaurant.get_cuisine_display }}</p>
 
             <!-- Description -->
             <p class="text-gray-600 text-sm text-center mb-4">
@@ -48,8 +75,8 @@
             <!-- Action Buttons -->
             <div class="flex justify-center space-x-3">
                 <a href="{% url 'restaurant_detail' restaurant.id %}" 
-                   class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
-                    View Details
+                   class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300">
+                    View Menu
                 </a>
                 <a href="{% url 'place_order' restaurant.id %}" 
                    class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
