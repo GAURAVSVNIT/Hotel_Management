@@ -210,10 +210,10 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Cuisines</h4>
                     <ul class="space-y-2">
-                        <li><a href="/restaurants?cuisine=indian" class="text-gray-400 hover:text-white transition duration-300">Indian Cuisine</a></li>
-                        <li><a href="/restaurants?cuisine=chinese" class="text-gray-400 hover:text-white transition duration-300">Chinese Cuisine</a></li>
-                        <li><a href="/restaurants?cuisine=thai" class="text-gray-400 hover:text-white transition duration-300">Thai Cuisine</a></li>
-                        <li><a href="/restaurants?cuisine=italian" class="text-gray-400 hover:text-white transition duration-300">Italian Cuisine</a></li>
+                        <li><a href="{% url 'restaurant_detail' 9 %}" class="text-gray-400 hover:text-white transition duration-300">Indian Cuisine</a></li>
+                        <li><a href="{% url 'restaurant_detail' 5 %}" class="text-gray-400 hover:text-white transition duration-300">Chinese Cuisine</a></li>
+                        <li><a href="{% url 'restaurant_detail' 6 %}" class="text-gray-400 hover:text-white transition duration-300">Thai Cuisine</a></li>
+                        <li><a href="{% url 'restaurant_detail' 2 %}" class="text-gray-400 hover:text-white transition duration-300">Italian Cuisine</a></li>
                     </ul>
                 </div>
             </div>

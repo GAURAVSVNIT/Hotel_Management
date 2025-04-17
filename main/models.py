@@ -6,10 +6,14 @@ import uuid
 
 class Restaurant(models.Model):
     CUISINE_CHOICES = [
-        ('indian', 'Indian'),
+        ('korean','Korean'),
+        ('italian', 'Italian'),
+        ('japanese','Japanese'),
+        ('mexican','Mexican'),
         ('chinese', 'Chinese'),
         ('thai', 'Thai'),
-        ('italian', 'Italian'),
+        ('spanish','Spanish'),
+        ('indian', 'Indian'),
     ]
     
     name = models.CharField(max_length=255)
