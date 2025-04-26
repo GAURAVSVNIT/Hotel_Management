@@ -1,0 +1,102 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Try DineEase Demo{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="relative h-[400px] overflow-hidden">
+    <img src="https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?auto=format&fit=crop&w=1920&q=80" 
+         alt="Demo Experience" 
+         class="w-full h-full object-cover"
+         onerror="this.onerror=null; this.src='https://images.pexels.com/photos/6205791/pexels-photo-6205791.jpeg?auto=compress&cs=tinysrgb&w=1920';">
+    
+    <!-- Dark overlay with gradient -->
+    <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.7) 100%);">
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center px-4 max-w-4xl">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-xl">Experience Our Interactive Demo</h1>
+                <p class="text-xl md:text-2xl mb-8 text-white drop-shadow-lg">See how DineEase transforms the dining experience</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <!-- QR Code Section -->
+            <div class="bg-orange-50 rounded-2xl p-8 mb-12 shadow-lg">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-semibold mb-4">Scan this QR Code to Start</h2>
+                    <div class="flex justify-center">
+                        <div class="w-64 h-64 border-4 border-orange-300 rounded-lg bg-white flex items-center justify-center p-2">
+                            <!-- Replace with actual QR code image when available -->
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://dineease.com/demo" 
+                                 alt="Demo QR Code" 
+                                 class="w-full h-full">
+                        </div>
+                    </div>
+                    <p class="text-gray-700 font-medium mt-6">
+                        Point your phone's camera at the QR code to access our interactive menu demo
+                    </p>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-semibold mb-4 text-orange-600">Demo Features</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3 text-xl">✓</span>
+                            <span class="text-gray-700 font-medium">Browse our sample menu with images</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3 text-xl">✓</span>
+                            <span class="text-gray-700 font-medium">Place a demo order</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3 text-xl">✓</span>
+                            <span class="text-gray-700 font-medium">Experience real-time order tracking</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3 text-xl">✓</span>
+                            <span class="text-gray-700 font-medium">Try our feedback system</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-xl font-semibold mb-4 text-orange-600">How It Works</h3>
+                    <ol class="space-y-4 list-decimal list-inside">
+                        <li class="text-gray-700 font-medium">Scan the QR code with your phone</li>
+                        <li class="text-gray-700 font-medium">Browse the interactive menu</li>
+                        <li class="text-gray-700 font-medium">Add items to your cart</li>
+                        <li class="text-gray-700 font-medium">Place your order</li>
+                        <li class="text-gray-700 font-medium">Track your order status</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="bg-gradient-to-r from-orange-700 to-orange-800 rounded-xl p-8 text-center shadow-lg">
+                <h3 class="text-2xl font-bold mb-6 text-white text-shadow" style="text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 0 5px rgba(0,0,0,0.5);">Ready to transform your restaurant?</h3>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{% url 'get_started' %}" 
+                       class="bg-white text-orange-700 hover:bg-orange-50 font-bold py-3 px-6 rounded-xl 
+                              transition-all transform hover:scale-105 duration-300 shadow-md">
+                        Get Started
+                    </a>
+                    <a href="{% url 'schedule_demo' %}" 
+                       class="bg-orange-600 hover:bg-white text-white hover:text-orange-700 font-bold py-3 px-6 rounded-xl 
+                              transition-all transform hover:scale-105 duration-300 border-2 border-white shadow-md">
+                        Schedule Custom Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

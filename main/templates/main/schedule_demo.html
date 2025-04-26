@@ -1,0 +1,132 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Schedule a Demo - DineEase{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="relative h-[300px] overflow-hidden">
+    <img src="https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?auto=format&fit=crop&w=1920&q=80" 
+         alt="Schedule Demo" 
+         class="w-full h-full object-cover"
+         onerror="this.onerror=null; this.src='https://images.pexels.com/photos/3184183/pexels-photo-3184183.jpeg?auto=compress&cs=tinysrgb&w=1920';">
+    
+    <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.7) 100%);">
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center px-4">
+                <h1 class="text-4xl font-bold mb-4 text-white drop-shadow-xl">Schedule a Personalized Demo</h1>
+                <p class="text-xl text-white drop-shadow-lg">See how DineEase can transform your restaurant operations</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto">
+            <!-- Demo Scheduling Form -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <form method="POST" class="p-8">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-6">
+                        <!-- Contact Information -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-gray-700 font-medium mb-2">Your Name*</label>
+                                <input type="text" id="name" name="name" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            </div>
+                            
+                            <div>
+                                <label for="restaurant_name" class="block text-gray-700 font-medium mb-2">Restaurant Name*</label>
+                                <input type="text" id="restaurant_name" name="restaurant_name" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="email" class="block text-gray-700 font-medium mb-2">Email Address*</label>
+                                <input type="email" id="email" name="email" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            </div>
+                            
+                            <div>
+                                <label for="phone" class="block text-gray-700 font-medium mb-2">Phone Number*</label>
+                                <input type="tel" id="phone" name="phone" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                            </div>
+                        </div>
+                        
+                        <!-- Demo Preferences -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="preferred_date" class="block text-gray-700 font-medium mb-2">Preferred Date*</label>
+                                <input type="date" id="preferred_date" name="preferred_date" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                       min="{{ today|date:'Y-m-d' }}">
+                            </div>
+                            
+                            <div>
+                                <label for="preferred_time" class="block text-gray-700 font-medium mb-2">Preferred Time*</label>
+                                <select id="preferred_time" name="preferred_time" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                                    <option value="">Select Time Slot</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="11:00">11:00 AM</option>
+                                    <option value="12:00">12:00 PM</option>
+                                    <option value="14:00">2:00 PM</option>
+                                    <option value="15:00">3:00 PM</option>
+                                    <option value="16:00">4:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="demo_type" class="block text-gray-700 font-medium mb-2">Demo Type*</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <label class="relative border rounded-lg p-4 cursor-pointer hover:border-orange-500 transition-colors">
+                                    <input type="radio" name="demo_type" value="online" class="absolute top-4 right-4" checked>
+                                    <h4 class="text-lg font-semibold mb-2">Online Demo</h4>
+                                    <p class="text-gray-600">Video call walkthrough</p>
+                                </label>
+                                
+                                <label class="relative border rounded-lg p-4 cursor-pointer hover:border-orange-500 transition-colors">
+                                    <input type="radio" name="demo_type" value="in_person" class="absolute top-4 right-4">
+                                    <h4 class="text-lg font-semibold mb-2">In-Person Demo</h4>
+                                    <p class="text-gray-600">At your location</p>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="specific_requirements" class="block text-gray-700 font-medium mb-2">Specific Requirements or Questions</label>
+                            <textarea id="specific_requirements" name="specific_requirements" rows="4"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                    placeholder="Tell us about your restaurant and any specific features you'd like to see..."></textarea>
+                        </div>
+                        
+                        <div>
+                            <button type="submit" 
+                                    class="w-full bg-orange-500 text-white py-3 px-6 rounded-xl hover:bg-orange-600 
+                                           transition-colors font-semibold transform hover:scale-105 duration-300">
+                                Schedule Demo
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Help Text -->
+            <div class="mt-8 text-center">
+                <p class="text-gray-600">Ready to get started now? 
+                    <a href="{% url 'get_started' %}" class="text-orange-600 hover:text-orange-700 font-medium">Sign up directly</a> or 
+                    <a href="{% url 'contact' %}" class="text-orange-600 hover:text-orange-700 font-medium">contact our team</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

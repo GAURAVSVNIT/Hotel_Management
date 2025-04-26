@@ -6,16 +6,25 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('login/', auth_views.LoginView.as_view(template_name='main/login.html'), name='login'),
+    path('restaurants/', views.restaurant_list, name='restaurant_list'),
+    path('restaurants/<int:id>/', views.restaurant_detail, name='restaurant_detail'),
+    path('menu/', views.menu_view, name='menu'),
+    path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'),
-    path('restaurants/', views.restaurant_list, name='restaurant_list'),
-    path('restaurants/<int:restaurant_id>/', views.restaurant_detail, name='restaurant_detail'),
-    path('restaurants/<int:restaurant_id>/order/', views.place_order, name='place_order'),
-    path('orders/', views.order_history, name='order_history'),
-    path('orders/<int:order_id>/', views.order_summary, name='order_summary'),
-    path('orders/<int:order_id>/checkout/', views.checkout, name='checkout'),
-    path('menu/', views.menu_view, name='menu'),
+    path('profile/', views.user_profile, name='user_profile'),
+    path('order-history/', views.order_history, name='order_history'),
+    path('place-order/<int:restaurant_id>/', views.place_order, name='place_order'),
+    path('order-summary/<int:order_id>/', views.order_summary, name='order_summary'),
+    path('checkout/<int:order_id>/', views.checkout, name='checkout'),
+    
+    # New routes for the updated website
+    path('reviews/', views.reviews, name='reviews'),
+    path('demo/', views.demo, name='demo'),
+    path('for-restaurants/', views.for_restaurants, name='for_restaurants'),
+    path('get-started/', views.get_started, name='get_started'),
+    path('schedule-demo/', views.schedule_demo, name='schedule_demo'),
+    path('contact/', views.contact, name='contact'),
 ]
 
 # Add media serving in development

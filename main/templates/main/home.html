@@ -1,171 +1,276 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
-{% block title %}DineEase - Your Ultimate Dining Destination{% endblock %}
+{% block title %}DineEase - Smart Restaurant Ordering{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
+<!-- Hero Section with improved visibility -->
 <div class="relative h-[600px] overflow-hidden">
-    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" 
+    <img src="{% static 'images/hero-image.jpg' %}" 
          alt="DineEase Restaurant Experience" 
          class="w-full h-full object-cover">
-    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-black/30 flex items-center justify-center">
-        <div class="text-center text-white px-4 max-w-4xl">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">Experience Exceptional Dining</h1>
-            <p class="text-xl md:text-2xl mb-8">Discover the finest restaurants and cuisines in your city</p>
-            <div class="flex flex-col md:flex-row gap-4 justify-center">
-                <a href="/restaurants" 
-                   class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-xl transition-all 
-                          transform hover:scale-105 duration-300 text-lg">
-                    Explore Restaurants
-                </a>
-                <a href="/menu" 
-                   class="bg-white hover:bg-orange-50 text-orange-500 font-bold py-4 px-8 rounded-xl transition-all 
-                          transform hover:scale-105 duration-300 text-lg">
-                    View Menu
-                </a>
+    
+    <!-- Dark overlay with gradient for better text visibility -->
+    <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.7) 100%);">
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center px-4 max-w-4xl">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-xl">Revolutionizing Dine-In with Just a Scan</h1>
+                <p class="text-xl md:text-2xl mb-8 text-white drop-shadow-lg">Scan a QR code, view the digital menu, place your order—all from your phone.</p>
+                <div class="flex flex-col md:flex-row gap-4 justify-center">
+                    <a href="{% url 'demo' %}" 
+                       class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-xl transition-all 
+                              transform hover:scale-105 duration-300 text-lg">
+                        Try Demo
+                    </a>
+                    <a href="{% url 'for_restaurants' %}" 
+                       class="bg-white hover:bg-orange-50 text-orange-600 font-bold py-4 px-8 rounded-xl transition-all 
+                              transform hover:scale-105 duration-300 text-lg shadow-lg border border-orange-200 hover:text-orange-700">
+                        For Restaurants →
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Featured Restaurants Section -->
+<!-- Section 1 - For Customers -->
 <div class="py-16 bg-white">
     <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12">Featured Restaurants</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Zaika Junction -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105">
-                <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe" 
-                     alt="Zaika Junction" 
-                     class="w-full h-64 object-cover">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold">Zaika Junction</h3>
-                        <span class="restaurant-badge">4.9 ★</span>
-                    </div>
-                    <p class="text-gray-600 mb-4">Authentic Indian Cuisine • Fine Dining</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-orange-600 font-bold">₹₹ • Open Now</span>
-                        <a href="#" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">View Menu</a>
-                    </div>
-                </div>
+        <h2 class="text-3xl font-bold text-center mb-12">Dine the Smart Way</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="text-center p-6 rounded-xl hover:bg-orange-50 transition-colors duration-300">
+                <div class="text-4xl mb-4">📱</div>
+                <h3 class="text-xl font-semibold mb-2">No App Required</h3>
+                <p class="text-gray-700 font-medium">Just scan the QR code to start ordering</p>
             </div>
-
-            <!-- Dragons Wok -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105">
-                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9" 
-                     alt="Dragons Wok" 
-                     class="w-full h-64 object-cover">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold">Dragons Wok</h3>
-                        <span class="restaurant-badge">4.8 ★</span>
-                    </div>
-                    <p class="text-gray-600 mb-4">Chinese Specialties • Asian Fusion</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-orange-600 font-bold">₹₹₹ • Open Now</span>
-                        <a href="#" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">View Menu</a>
-                    </div>
-                </div>
+            <div class="text-center p-6 rounded-xl hover:bg-orange-50 transition-colors duration-300">
+                <div class="text-4xl mb-4">🍔</div>
+                <h3 class="text-xl font-semibold mb-2">Visual Menus</h3>
+                <p class="text-gray-700 font-medium">High-quality images and detailed descriptions</p>
             </div>
-
-            <!-- Baan Thai -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105">
-                <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de" 
-                     alt="Baan Thai" 
-                     class="w-full h-64 object-cover">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold">Baan Thai</h3>
-                        <span class="restaurant-badge">4.7 ★</span>
-                    </div>
-                    <p class="text-gray-600 mb-4">Authentic Thai • Contemporary Setting</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-orange-600 font-bold">₹₹ • Open Now</span>
-                        <a href="#" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">View Menu</a>
-                    </div>
-                </div>
+            <div class="text-center p-6 rounded-xl hover:bg-orange-50 transition-colors duration-300">
+                <div class="text-4xl mb-4">⚡</div>
+                <h3 class="text-xl font-semibold mb-2">Instant Orders</h3>
+                <p class="text-gray-700 font-medium">Orders go straight to the kitchen</p>
             </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="text-center p-6 rounded-xl hover:bg-orange-50 transition-colors duration-300">
+                <div class="text-4xl mb-4">🔄</div>
+                <h3 class="text-xl font-semibold mb-2">Track Order Status</h3>
+                <p class="text-gray-700 font-medium">Real-time updates on your order</p>
+            </div>
+            <div class="text-center p-6 rounded-xl hover:bg-orange-50 transition-colors duration-300">
+                <div class="text-4xl mb-4">💬</div>
+                <h3 class="text-xl font-semibold mb-2">Easy Feedback</h3>
+                <p class="text-gray-700 font-medium">Share your experience instantly</p>
+            </div>
+        </div>
+        <!-- Customer Quote -->
+        <div class="max-w-2xl mx-auto text-center">
+            <blockquote class="italic text-gray-800 text-lg mb-4 font-medium">
+                "It felt like using a food app inside the restaurant. Loved it!"
+            </blockquote>
+            <p class="text-gray-600">— A Happy Customer</p>
         </div>
     </div>
 </div>
 
-<!-- Best Sellers Section -->
+<!-- Section 2 - For Restaurants -->
 <div class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12">Popular Dishes</h2>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <!-- Pav Bhaji -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84" 
-                     alt="Pav Bhaji" 
-                     class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="font-bold text-lg mb-2">Pav Bhaji</h3>
-                    <p class="text-gray-600 text-sm">Mumbai's favorite street food</p>
-                    <p class="text-orange-600 font-bold mt-2">₹150</p>
+        <h2 class="text-3xl font-bold text-center mb-12">Why Choose DineEase?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div class="text-3xl mb-4">💼</div>
+                <h3 class="text-xl font-semibold mb-2">Reduce Staff Load</h3>
+                <p class="text-gray-700 font-medium">Let your staff focus on hospitality</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div class="text-3xl mb-4">📈</div>
+                <h3 class="text-xl font-semibold mb-2">Increase Order Value</h3>
+                <p class="text-gray-700 font-medium">Smart suggestions boost sales</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div class="text-3xl mb-4">✅</div>
+                <h3 class="text-xl font-semibold mb-2">Minimize Errors</h3>
+                <p class="text-gray-700 font-medium">Digital orders reduce mistakes</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div class="text-3xl mb-4">⏱️</div>
+                <h3 class="text-xl font-semibold mb-2">Faster Table Turnover</h3>
+                <p class="text-gray-700 font-medium">Streamlined ordering process</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div class="text-3xl mb-4">📊</div>
+                <h3 class="text-xl font-semibold mb-2">Get Feedback and Insights</h3>
+                <p class="text-gray-700 font-medium">Data-driven decisions with analytics</p>
+            </div>
+        </div>
+        <!-- Restaurant Quote -->
+        <div class="max-w-2xl mx-auto text-center bg-white p-8 rounded-xl shadow-md">
+            <blockquote class="italic text-gray-800 text-lg mb-4 font-medium">
+                "We cut order errors by half and increased dessert sales by 20%."
+            </blockquote>
+            <p class="text-gray-600">— Restaurant Owner</p>
+        </div>
+    </div>
+</div>
+
+<!-- Section 3 - How It Works -->
+<div class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">How It Works</h2>
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+                <!-- Step 1 -->
+                <div class="relative flex flex-col items-center md:col-span-1">
+                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold mb-4">1</div>
+                    <h3 class="text-lg font-semibold mb-2">Scan QR</h3>
+                    <p class="text-gray-700 text-center text-sm font-medium">Use phone camera</p>
+                </div>
+                <!-- Connection Line -->
+                <div class="hidden md:block md:col-span-1 relative">
+                    <div class="absolute top-6 w-full border-t-2 border-dashed border-orange-200"></div>
+                </div>
+                <!-- Step 2 -->
+                <div class="relative flex flex-col items-center md:col-span-1">
+                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold mb-4">2</div>
+                    <h3 class="text-lg font-semibold mb-2">View Menu</h3>
+                    <p class="text-gray-700 text-center text-sm font-medium">Browse & select</p>
+                </div>
+                <!-- Connection Line -->
+                <div class="hidden md:block md:col-span-1 relative">
+                    <div class="absolute top-6 w-full border-t-2 border-dashed border-orange-200"></div>
+                </div>
+                <!-- Step 3 -->
+                <div class="relative flex flex-col items-center md:col-span-1">
+                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold mb-4">3</div>
+                    <h3 class="text-lg font-semibold mb-2">Order</h3>
+                    <p class="text-gray-700 text-center text-sm font-medium">Place your order</p>
+                </div>
+                <!-- Connection Line -->
+                <div class="hidden md:block md:col-span-1 relative">
+                    <div class="absolute top-6 w-full border-t-2 border-dashed border-orange-200"></div>
                 </div>
             </div>
-
-            <!-- Masala Dosa -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc" 
-                     alt="Masala Dosa" 
-                     class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="font-bold text-lg mb-2">Idli Sambhar</h3>
-                    <p class="text-gray-600 text-sm">South Indian classic</p>
-                    <p class="text-orange-600 font-bold mt-2">₹120</p>
+            
+            <!-- Second row with remaining steps -->
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mt-8 md:mt-12">
+                <!-- Step 4 -->
+                <div class="relative flex flex-col items-center md:col-span-1">
+                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold mb-4">4</div>
+                    <h3 class="text-lg font-semibold mb-2">Kitchen</h3>
+                    <p class="text-gray-700 text-center text-sm font-medium">Order received</p>
                 </div>
-            </div>
-
-            <!-- Manchurian -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246" 
-                     alt="Manchurian" 
-                     class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="font-bold text-lg mb-2">Veg Chowmein</h3>
-                    <p class="text-gray-600 text-sm">Indo-Chinese favorite</p>
-                    <p class="text-orange-600 font-bold mt-2">₹180</p>
+                <!-- Connection Line -->
+                <div class="hidden md:block md:col-span-1 relative">
+                    <div class="absolute top-6 w-full border-t-2 border-dashed border-orange-200"></div>
                 </div>
-            </div>
-
-            <!-- Pad Thai -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1559314809-0d155014e29e" 
-                     alt="Pad Thai" 
-                     class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="font-bold text-lg mb-2">Pad Thai</h3>
-                    <p class="text-gray-600 text-sm">Classic Thai noodles</p>
-                    <p class="text-orange-600 font-bold mt-2">₹220</p>
+                <!-- Step 5 -->
+                <div class="relative flex flex-col items-center md:col-span-1">
+                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold mb-4">5</div>
+                    <h3 class="text-lg font-semibold mb-2">Delivery</h3>
+                    <p class="text-gray-700 text-center text-sm font-medium">Food served</p>
+                </div>
+                <!-- Connection Line -->
+                <div class="hidden md:block md:col-span-1 relative">
+                    <div class="absolute top-6 w-full border-t-2 border-dashed border-orange-200"></div>
+                </div>
+                <!-- Step 6 -->
+                <div class="relative flex flex-col items-center md:col-span-1">
+                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold mb-4">6</div>
+                    <h3 class="text-lg font-semibold mb-2">Feedback</h3>
+                    <p class="text-gray-700 text-center text-sm font-medium">Rate & pay</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- About Us Section -->
+<!-- Section 4 - Unique Features -->
+<div class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Unique Features</h2>
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white rounded-xl p-8 shadow-md">
+                <ul class="space-y-6">
+                    <li class="flex items-center">
+                        <span class="text-green-500 text-xl mr-4">✓</span>
+                        <span class="text-lg text-gray-800 font-medium">Customizable for each restaurant</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="text-green-500 text-xl mr-4">✓</span>
+                        <span class="text-lg text-gray-800 font-medium">Easy QR deployment</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="text-green-500 text-xl mr-4">✓</span>
+                        <span class="text-lg text-gray-800 font-medium">Loyalty points & repeat orders <span class="text-orange-600 text-sm font-bold">(coming soon)</span></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 5 - Blog/Review Highlights -->
 <div class="py-16 bg-white">
     <div class="container mx-auto px-4">
-        <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-3xl font-bold mb-8">About DineEase</h2>
-            <p class="text-gray-600 mb-6">
-                At DineEase, we're passionate about connecting food lovers with the best dining experiences. 
-                Our platform brings together a curated selection of restaurants, offering diverse cuisines 
-                and unforgettable flavors, all at your fingertips.
-            </p>
-            <p class="text-gray-600 mb-8">
-                Whether you're craving authentic Indian delicacies, savoring Chinese specialties, 
-                or exploring Thai cuisine, DineEase is your trusted companion in the world of 
-                exceptional dining.
-            </p>
-            <a href="/restaurants" 
-               class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-xl 
-                      transition-all transform hover:scale-105 duration-300">
-                Explore Our Restaurants
+        <h2 class="text-3xl font-bold text-center mb-12">Latest Updates & Reviews</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Blog Posts -->
+            <div class="space-y-6">
+                <div class="bg-orange-50 rounded-xl p-6 hover:shadow-md transition-shadow duration-300">
+                    <h3 class="text-xl font-semibold mb-2">How Smart Ordering Transformed Our Cafe</h3>
+                    <p class="text-gray-700 mb-4 font-medium">A success story of digital transformation in the restaurant industry...</p>
+                    <a href="#" class="text-orange-600 font-semibold hover:text-orange-700">Read More →</a>
+                </div>
+                <div class="bg-orange-50 rounded-xl p-6 hover:shadow-md transition-shadow duration-300">
+                    <h3 class="text-xl font-semibold mb-2">5 Reasons Contactless Dine-In is the Future</h3>
+                    <p class="text-gray-700 mb-4 font-medium">Exploring the benefits of modern dining experiences...</p>
+                    <a href="#" class="text-orange-600 font-semibold hover:text-orange-700">Read More →</a>
+                </div>
+            </div>
+            <!-- Reviews -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <blockquote class="italic text-gray-800 text-lg mb-4 font-medium">
+                        "Super fast ordering and no mistakes. 10/10."
+                    </blockquote>
+                    <p class="text-gray-600 font-medium">— Happy Customer</p>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-md">
+                    <blockquote class="italic text-gray-800 text-lg mb-4 font-medium">
+                        "Setup was easy. We went live in 2 days."
+                    </blockquote>
+                    <p class="text-gray-600 font-medium">— Restaurant Owner</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 6 - Final CTA -->
+<div class="py-16 bg-gradient-to-r from-orange-700 to-orange-800">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-8 text-white tracking-wide text-shadow" style="text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 0 5px rgba(0,0,0,0.5);">Ready to make your restaurant smarter?</h2>
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+            <a href="{% url 'get_started' %}" 
+               class="bg-orange-600 hover:bg-white text-orange-200 hover:text-orange-700 font-bold py-4 px-8 rounded-xl 
+                      transition-all transform hover:scale-105 duration-300 text-lg border-3 border-white shadow-xl" style="box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);">
+                Get Started
+            </a>
+            <a href="{% url 'schedule_demo' %}" 
+               class="bg-orange-600 hover:bg-white text-orange-200 hover:text-orange-700 font-bold py-4 px-8 rounded-xl 
+                      transition-all transform hover:scale-105 duration-300 text-lg border-3 border-white shadow-xl" style="box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);">
+                Schedule a Demo
+            </a>
+            <a href="{% url 'contact' %}" 
+               class="bg-orange-600 hover:bg-white text-orange-200 hover:text-orange-700 font-bold py-4 px-8 rounded-xl 
+                      transition-all transform hover:scale-105 duration-300 text-lg border-3 border-white shadow-xl" style="box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);">
+                Contact Us
             </a>
         </div>
     </div>

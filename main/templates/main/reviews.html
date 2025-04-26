@@ -1,0 +1,132 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Customer Reviews - DineEase{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto p-6">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">Customer Reviews</h1>
+        <p class="text-gray-600 max-w-3xl mx-auto">See what our customers are saying about their dining experiences at our partner restaurants.</p>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="max-w-xl mx-auto mb-8">
+        <form method="get" class="flex gap-4 items-center justify-center">
+            <select name="restaurant" 
+                    class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200">
+                <option value="">All Restaurants</option>
+                {% for restaurant in restaurants %}
+                <option value="{{ restaurant.id }}" 
+                        {% if filtered_restaurant and filtered_restaurant.id == restaurant.id %}selected{% endif %}>
+                    {{ restaurant.name }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" 
+                    class="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition duration-300">
+                Filter
+            </button>
+            {% if filtered_restaurant %}
+            <a href="{% url 'reviews' %}" 
+               class="text-orange-500 hover:text-orange-600 transition duration-300">
+                Clear Filter
+            </a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if messages %}
+    <div class="mb-6">
+        {% for message in messages %}
+        <div class="p-4 {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'info' %}bg-blue-100 text-blue-700{% else %}bg-yellow-100 text-yellow-700{% endif %} rounded-lg">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Reviews List -->
+    {% if reviews %}
+    <div class="space-y-6">
+        {% for review in reviews %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="p-6">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                    <!-- Review Header: Restaurant, Rating, Date -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-1">
+                            <a href="{% url 'restaurant_detail' review.restaurant.id %}" class="text-orange-600 hover:text-orange-800 hover:underline">
+                                {{ review.restaurant.name }}
+                            </a>
+                        </h3>
+                        <div class="flex items-center mb-2">
+                            <span class="text-amber-400 font-medium">{{ review.star_rating }}</span>
+                            <span class="text-gray-500 ml-2">({{ review.rating }}/5)</span>
+                        </div>
+                        <p class="text-sm text-gray-500">Reviewed by {{ review.get_reviewer_name }}</p>
+                        <p class="text-sm text-gray-500">{{ review.created_at|date:"F j, Y" }}</p>
+                    </div>
+                    
+                    <!-- Cuisine Badge -->
+                    <div>
+                        <span class="inline-block bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">
+                            {{ review.restaurant.get_cuisine_display }}
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Review Text (with Read More functionality) -->
+                <div class="mt-4" x-data="{ expanded: false }">
+                    <div x-show="!expanded" class="text-gray-700">
+                        {{ review.review_text|truncatewords:50 }}
+                        {% if review.review_text|wordcount > 50 %}
+                        <button @click="expanded = true" class="text-orange-500 font-medium hover:text-orange-600 ml-1">Read More</button>
+                        {% endif %}
+                    </div>
+                    <div x-show="expanded" x-cloak class="text-gray-700">
+                        {{ review.review_text }}
+                        <button @click="expanded = false" class="text-orange-500 font-medium hover:text-orange-600 ml-1">Show Less</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-8 flex justify-center">
+        <div class="flex space-x-1">
+            {% if reviews.has_previous %}
+            <a href="?page={{ reviews.previous_page_number }}{% if filtered_restaurant %}&restaurant={{ filtered_restaurant.id }}{% endif %}" 
+               class="px-4 py-2 bg-white text-orange-500 border border-gray-300 rounded-lg hover:bg-orange-50 transition duration-300">
+                Previous
+            </a>
+            {% endif %}
+            
+            {% if reviews.paginator.num_pages > 1 %}
+            <span class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-lg">
+                Page {{ reviews.number }} of {{ reviews.paginator.num_pages }}
+            </span>
+            {% endif %}
+            
+            {% if reviews.has_next %}
+            <a href="?page={{ reviews.next_page_number }}{% if filtered_restaurant %}&restaurant={{ filtered_restaurant.id }}{% endif %}" 
+               class="px-4 py-2 bg-white text-orange-500 border border-gray-300 rounded-lg hover:bg-orange-50 transition duration-300">
+                Next
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-12 bg-gray-50 rounded-xl">
+        <p class="text-gray-600 text-lg">No reviews available at the moment.</p>
+        {% if filtered_restaurant %}
+        <p class="text-gray-500 mt-2">Be the first to review {{ filtered_restaurant.name }}!</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -69,7 +69,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     guest_id = models.UUIDField(default=uuid.uuid4, editable=False, null=True, blank=True)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    items = models.ManyToManyField(MenuItem)
+    # Instead of directly using ManyToManyField, we'll access items through OrderItem
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     total_price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00, editable=False)
     discount_applied = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
@@ -81,19 +81,113 @@ class Order(models.Model):
         self.skip_price_calculation = False
 
     def save(self, *args, **kwargs):
-        # Only calculate total price if we're not skipping price calculation
-        if not hasattr(self, 'skip_price_calculation') or not self.skip_price_calculation:
-            self.total_price = sum(item.price for item in self.items.all())
+        # Only calculate total price if we're not skipping price calculation and only if already saved
+        if self.pk and (not hasattr(self, 'skip_price_calculation') or not self.skip_price_calculation):
+            # Calculate based on OrderItems
+            self.total_price = sum(
+                order_item.quantity * order_item.menu_item.price 
+                for order_item in self.items.all()
+            )
         if not self.user and not self.guest_id:
             self.guest_id = uuid.uuid4()
         super().save(*args, **kwargs)
 
     def apply_coupon(self):
         if self.coupon and self.coupon.is_valid():
+            # Recalculate total price first to ensure it's up to date
+            total = sum(
+                order_item.quantity * order_item.menu_item.price 
+                for order_item in self.items.all()
+            )
+            self.total_price = total
+            
+            # Calculate discount
             discount_amount = (self.total_price * self.coupon.discount_percentage) / 100
             self.discount_applied = discount_amount
-            self.total_price -= discount_amount
+            
+            # Set the skip_price_calculation flag to avoid recalculating in save()
+            self.skip_price_calculation = True
             self.save()
+            # Reset the flag after saving
+            self.skip_price_calculation = False
 
     def __str__(self):
         return f"Order {self.id} by {self.user if self.user else 'Guest'}"
+
+    @property
+    def get_total_items(self):
+        """Return the total number of items in this order"""
+        return sum(item.quantity for item in self.items.all())
+
+    @property
+    def get_order_items(self):
+        """Return all order items for this order"""
+        return self.items.all()
+
+    @property
+    def get_total_after_discount(self):
+        """Return the total price after applying any discounts"""
+        return self.total_price - self.discount_applied
+
+
+class OrderItem(models.Model):
+    """Model for individual items in an order with quantity"""
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    
+    def __str__(self):
+        return f"{self.quantity} × {self.menu_item.name}"
+    
+    @property
+    def name(self):
+        """Return the name of the menu item for template convenience"""
+        return self.menu_item.name
+    
+    @property
+    def price(self):
+        """Return the price of this line item (price × quantity)"""
+        return self.menu_item.price * self.quantity
+    
+    @property
+    def description(self):
+        """Return the menu item description for template convenience"""
+        return self.menu_item.description
+
+
+class Review(models.Model):
+    """Model for customer reviews of restaurants"""
+    RATING_CHOICES = [
+        (1, '1 - Poor'),
+        (2, '2 - Fair'),
+        (3, '3 - Good'),
+        (4, '4 - Very Good'),
+        (5, '5 - Excellent'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, 
+                           related_name='reviews')
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, 
+                                 related_name='reviews')
+    name = models.CharField(max_length=100, blank=True, help_text="Name for non-logged in users")
+    rating = models.IntegerField(choices=RATING_CHOICES, default=5)
+    review_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        
+    def __str__(self):
+        return f"Review for {self.restaurant.name} by {self.get_reviewer_name()}"
+    
+    def get_reviewer_name(self):
+        """Return the name of the reviewer, prioritizing user name if available"""
+        if self.user:
+            return self.user.username
+        return self.name or "Anonymous"
+    
+    @property
+    def star_rating(self):
+        """Return a string of stars representing the rating"""
+        return '★' * self.rating + '☆' * (5 - self.rating)
