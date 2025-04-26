@@ -3,7 +3,6 @@ __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
-*.pyc
 *.so
 
 # Virtual Environment
@@ -26,9 +25,12 @@ db.sqlite3-journal
 **/migrations/
 !**/migrations/__init__.py
 
-# Static & Media Files
-/staticfiles/
-/media/
+# Static Files (ignored)
+staticfiles/
+
+# ✅ Media Files (keep media/ in Git)
+# ⚠️ Commented out so you CAN track uploaded images
+# /media/
 
 # Tailwind CSS & Node (Django-Tailwind)
 node_modules/
@@ -70,6 +72,3 @@ htmlcov/
 # Database dumps
 *.sql
 *.dump
-
-__pycache__/
-*.pyc

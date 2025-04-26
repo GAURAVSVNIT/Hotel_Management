@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
+from django.conf.urls.static import static
 from django.views.static import serve
 from django.http import FileResponse, HttpResponse
 import logging
@@ -98,3 +99,9 @@ urlpatterns = debug_patterns + [
 # Add logging middleware to settings
 if 'RequestLoggingMiddleware' not in str(settings.MIDDLEWARE):
     settings.MIDDLEWARE.insert(0, 'hotel_management.urls.RequestLoggingMiddleware')
+
+# Add static and media URL patterns for production
+if not settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
