@@ -536,3 +536,11 @@ def checkout(request, order_id):
     except Exception as e:
         messages.error(request, f'Error during checkout: {str(e)}')
         return redirect('order_history')
+    
+def aboutus(request):
+    try:
+        return render(request, 'main/aboutus.html')
+    except Exception as e:
+        messages.error(request, f'Error loading about us page: {str(e)}')
+        return render(request, 'main/aboutus.html')
+    

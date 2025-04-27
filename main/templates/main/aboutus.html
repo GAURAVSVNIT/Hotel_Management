@@ -1,0 +1,98 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block title %}About Us - DineEase{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="relative h-[300px] overflow-hidden">
+    <img src="https://www.susangreenecopywriter.com/wp-content/uploads/2013/01/photo-1518081461904-9d8f136351c2.jpg" 
+         alt="About Us" 
+         class="w-full h-full object-cover"
+         onerror="this.onerror=null; this.src='https://images.pexels.com/photos/33999/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1920';">
+    
+    <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.7) 100%);">
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center px-4">
+                <h1 class="text-4xl font-bold mb-4 text-white drop-shadow-xl">About Us</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Our Goals Section -->
+<section class="py-12 bg-gray-50">
+    <div class="max-w-4xl mx-auto text-center px-4">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Our Goals</h2>
+        <p class="text-gray-600 text-left text-xl ">
+            We're here to make restaurant management easy and stress-free.
+We built DineEase because we believe restaurants deserve better tools — tools that are simple, fast, and built with love.
+<br>
+
+Our goals are:
+<br>
+
+➡️ Help restaurants save time ⏳
+<br>
+
+➡️ Make ordering, managing, and tracking super simple 📈
+<br>
+
+➡️ Bring smiles to customers and owners alike 😄
+<br>
+
+Every line of code we write is for the dreamers, the chefs, the servers, and the foodies.
+We’re just getting started — and we’re hungry for more innovation!
+<br>
+        </p>
+    </div>
+</section>
+
+<!-- Meet Our Team Section -->
+<section class="py-12 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Meet Our Team</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Developer 1 -->
+            <div class="bg-white rounded-lg shadow-xl p-6 text-center">
+                <img src="https://avatars.githubusercontent.com/u/179153079?v=4" alt="Developer 1" class="mx-auto rounded-full mb-4 w-24 h-24">
+                <h3 class="text-xl font-bold text-gray-800">Manav Dhamecha</h3>
+                <p class="text-gray-600">Backend Developer</p>
+                <p class="text-gray-500 text-sm mt-2">Passionate about building powerful, secure, and scalable server-side applications that bring ideas to life behind the scenes. Skilled in data base management and working with Python and Django.</p>
+                <a href="https://www.linkedin.com/in/manav-dhamecha-91465b330/" class="text-blue-500 mt-4 inline-block">LinkedIn</a>
+            </div>
+
+            <!-- Developer 2 -->
+            <div class="bg-white rounded-lg shadow-xl p-6 text-center">
+                <img src="https://media.licdn.com/dms/image/v2/D5603AQHXZnTQSC0Xmg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1729319926405?e=1750896000&v=beta&t=_ommXcLaZRHh_9zeg7Wh3NmMaS7i333ahzmqV_XWOPQ" alt="Developer 2" class="mx-auto rounded-full mb-4 w-24 h-24">
+                <h3 class="text-xl font-bold text-gray-800">Nishchay Mittal</h3>
+                <p class="text-gray-600">Frontend Developer</p>
+                <p class="text-gray-500 text-sm mt-2">Transforms ideas into stylish, responsive websites using HTML, CSS, Tailwind, and Python. They love turning complex designs into smooth, easy-to-navigate experiences that look great on any device.</p>
+                <a href="https://www.linkedin.com/in/nishchay-mittal-437822324/" class="text-blue-500 mt-4 inline-block">LinkedIn</a>
+            </div>
+
+            <!-- Developer 3 -->
+            <div class="bg-white rounded-lg shadow-xl p-6 text-center">
+                <img src="https://via.placeholder.com/150" alt="Developer 3" class="mx-auto rounded-full mb-4 w-24 h-24">
+                <h3 class="text-xl font-bold text-gray-800">Gaurav B Damor</h3>
+                <p class="text-gray-600">Backend Developer</p>
+                <p class="text-gray-500 text-sm mt-2">Specializes in designing robust APIs and database systems to ensure seamless app performance and security, especially skillful in building projects using Django and working with data management.</p>
+                <a href="https://www.linkedin.com/in/gaurav-b-damor-b1495b326/" class="text-blue-500 mt-4 inline-block">LinkedIn</a>
+            </div>
+
+            <!-- Developer 4 -->
+            <div class="bg-white rounded-lg shadow-xl p-6 text-center">
+                <img src="https://media.licdn.com/dms/image/v2/D4E03AQGS1-TyOkBDtw/profile-displayphoto-shrink_400_400/B4EZRN0P6nGwAg-/0/1736472330814?e=1750896000&v=beta&t=Q6vkOP02eZMF_0EmbORV-km3am_cWKIJICS8hMm6C5M" alt="Developer 4" class="mx-auto rounded-full mb-4 w-24 h-24">
+                <h3 class="text-xl font-bold text-gray-800">Zeel Ramoliya</h3>
+                <p class="text-gray-600">Frontend Developer</p>
+                <p class="text-gray-500 text-sm mt-2">A creative mind who loves turning code into beautiful, interactive websites. Using HTML, CSS, Tailwind, and Python, they ensure every click is smooth and every design looks just right.</p>
+                <a href="https://www.linkedin.com/in/zeel-ramoliya-3029462b9/" class="text-blue-500 mt-4 inline-block">LinkedIn</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

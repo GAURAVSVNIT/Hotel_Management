@@ -25,6 +25,7 @@ urlpatterns = [
     path('get-started/', views.get_started, name='get_started'),
     path('schedule-demo/', views.schedule_demo, name='schedule_demo'),
     path('contact/', views.contact, name='contact'),
+    path('aboutus/',views.aboutus,name = 'aboutus'),
 ]
 
 # Add media serving in development
