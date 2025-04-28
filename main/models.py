@@ -81,16 +81,21 @@ class Order(models.Model):
         self.skip_price_calculation = False
 
     def save(self, *args, **kwargs):
-        # Only calculate total price if we're not skipping price calculation and only if already saved
-        if self.pk and (not hasattr(self, 'skip_price_calculation') or not self.skip_price_calculation):
-            # Calculate based on OrderItems
-            self.total_price = sum(
-                order_item.quantity * order_item.menu_item.price 
-                for order_item in self.items.all()
-            )
+        # Calculate total price if we're not skipping calculation
+        if not hasattr(self, 'skip_price_calculation') or not self.skip_price_calculation:
+            calculated_total = self.calculate_total
+            if calculated_total > 0:
+                self.total_price = calculated_total
+            
         if not self.user and not self.guest_id:
             self.guest_id = uuid.uuid4()
         super().save(*args, **kwargs)
+        
+    @property
+    def calculate_total(self):
+        """Calculate current total from order items"""
+        total = sum(item.quantity * item.menu_item.price for item in self.items.all())
+        return total if total > 0 else 0  # Ensure we never return None or negative
 
     def apply_coupon(self):
         if self.coupon and self.coupon.is_valid():
@@ -127,7 +132,10 @@ class Order(models.Model):
     @property
     def get_total_after_discount(self):
         """Return the total price after applying any discounts"""
-        return self.total_price - self.discount_applied
+        total = self.calculate_total  # Use calculated total instead of stored total_price
+        if self.coupon and self.coupon.is_valid():
+            return total - self.discount_applied
+        return total
 
 
 class OrderItem(models.Model):
