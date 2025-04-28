@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Restaurant, MenuItem, Order, Coupon, Owner
+from .models import Restaurant, MenuItem, Order, Coupon
 
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin):
@@ -26,9 +26,9 @@ class CouponAdmin(admin.ModelAdmin):
     search_fields = ("code",)
     list_filter = ("is_active",)
 
-@admin.register(Owner)
-class OwnerAdmin(admin.ModelAdmin):
-    list_display = ("user", "restaurant", "phone_number")  # Added phone_number for more detail
-    search_fields = ("user__username", "restaurant__name", "phone_number")  # Allow searching by phone number too
-    list_filter = ("restaurant",)  # Filter by restaurant
-    # readonly_fields removed to allow selection of user and restaurant
+# @admin.register(Owner)
+# class OwnerAdmin(admin.ModelAdmin):
+#     list_display = ("user", "restaurant", "phone_number")  # Added phone_number for more detail
+#     search_fields = ("user__username", "restaurant__name", "phone_number")  # Allow searching by phone number too
+#     list_filter = ("restaurant",)  # Filter by restaurant
+#     # readonly_fields removed to allow selection of user and restaurant
