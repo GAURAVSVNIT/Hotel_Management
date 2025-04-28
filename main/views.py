@@ -624,3 +624,11 @@ def owner_dashboard(request):
         print(f"!!! ERROR IN OWNER DASHBOARD VIEW: {type(e).__name__} - {e}") # Add this print statement
         messages.error(request, f'An unexpected error occurred while loading the dashboard.') # Generic message for user
         return redirect('home')
+    
+def aboutus(request):
+    try:
+        return render(request, 'main/aboutus.html')
+    except Exception as e:
+        messages.error(request, f'Error loading about us page: {str(e)}')
+        return render(request, 'main/aboutus.html')
+    

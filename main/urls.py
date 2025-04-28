@@ -28,6 +28,7 @@ urlpatterns = [
     
     # Owner routes
     path('owner/dashboard/', views.owner_dashboard, name='owner_dashboard'),
+    path('aboutus/',views.aboutus,name = 'aboutus'),
 ]
 
 # Add media serving in development
