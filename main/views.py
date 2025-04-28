@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.utils import timezone
+from django.contrib.auth.models import User  # Import User model
+from django.db import IntegrityError, transaction # For database transactions
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Restaurant, MenuItem, Order, OrderItem, Coupon, Review
+from .models import Restaurant, MenuItem, Order, OrderItem, Coupon, Review, Owner
 from .forms import LoginForm, RegisterForm, CouponApplyForm, ContactForm, RestaurantSignupForm
 import re
 
@@ -125,16 +127,32 @@ def menu_view(request):
 
 # Authentication views
 def login_view(request):
-    """Handle user login"""
+    """Handle user login with user type verification"""
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
+            user_type = 'owner' if form.cleaned_data.get('user_type') else 'customer'
             user = authenticate(username=username, password=password)
+            
             if user is not None:
+                # Check if user type matches
+                is_owner = Owner.objects.filter(user=user).exists()
+                
+                if user_type == 'owner' and not is_owner:
+                    messages.error(request, 'This account is not registered as a restaurant owner.')
+                    return render(request, 'main/login.html', {'form': form})
+                elif user_type == 'customer' and is_owner:
+                    messages.error(request, 'Please login as an owner with this account.')
+                    return render(request, 'main/login.html', {'form': form})
+                
                 login(request, user)
                 messages.success(request, f'Welcome back, {username}!')
+                
+                # Redirect based on user type
+                if user_type == 'owner':
+                    return redirect('owner_dashboard')
                 return redirect('home')
             else:
                 messages.error(request, 'Invalid username or password.')
@@ -313,7 +331,7 @@ def for_restaurants(request):
         return redirect('home')
 
 def get_started(request):
-    """Sign-up page for restaurant owners"""
+    """Sign-up page for restaurant owners, creates User, Restaurant, Owner"""
     try:
         if request.method == 'POST':
             form = RestaurantSignupForm(request.POST)
@@ -321,34 +339,67 @@ def get_started(request):
                 # Get form data
                 data = form.cleaned_data
                 
-                # Database operations in a production environment would include:
-                # 1. Create RestaurantApplication record
-                #    - Save restaurant details (name, address, cuisine type, capacity)
-                #    - Store owner contact information (name, email, phone)
-                #    - Record selected subscription plan
-                #    - Set application status (pending, approved, rejected)
-                # 2. Generate and send confirmation email
-                #    - Thank you message
-                #    - Application reference number
-                #    - Expected timeline for review
-                #    - Contact information for questions
-                # 3. Create notification for sales/onboarding team
-                #    - Add to CRM pipeline
-                #    - Assign to appropriate team member
-                #    - Schedule follow-up contact
-                # 4. Pre-create user account (if immediate access needed)
-                #    - Generate temporary credentials
-                #    - Send separate email with login details
-                #    - Set permissions based on selected plan
-                
-                messages.success(request, 'Thank you for registering! We will contact you shortly to complete the setup.')
-                return redirect('home')
+                # -- START: Implement Object Creation --
+                try:
+                    # Use a transaction to ensure all objects are created or none are
+                    with transaction.atomic():
+                        # 1. Create the User account
+                        new_user = User.objects.create_user(
+                            username=data['username'],
+                            password=data['password'],
+                            email=data['email'],
+                            # Add owner's name if desired
+                            first_name=data['owner_name'].split(' ')[0] if data['owner_name'] else '',
+                            last_name=' '.join(data['owner_name'].split(' ')[1:]) if ' ' in data['owner_name'] else '',
+                        )
+
+                        # 2. Create the Restaurant
+                        # Determine cuisine - handle 'other'
+                        cuisine = data['cuisine_type']
+                        if cuisine == 'other':
+                            cuisine = data.get('other_cuisine', 'Other') # Use specified or default to 'Other'
+
+                        new_restaurant = Restaurant.objects.create(
+                            name=data['restaurant_name'],
+                            location=f"{data['address']}, {data['city']}", # Combine address/city
+                            cuisine=cuisine,
+                            # description can be added later if needed
+                        )
+
+                        # 3. Create the Owner profile and link User and Restaurant
+                        new_owner = Owner.objects.create(
+                            user=new_user,
+                            restaurant=new_restaurant,
+                            phone_number=data['phone'],
+                            # address is now stored in Restaurant, could duplicate if needed
+                        )
+
+                    # Send confirmation emails, create CRM tasks etc. (Placeholder)
+                    # send_owner_confirmation_email(new_user.email, new_restaurant.name)
+                    # notify_sales_team(new_restaurant.name)
+
+                    messages.success(request, f'Restaurant "{new_restaurant.name}" and owner account "{new_user.username}" created! You can now log in.')
+                    return redirect('login') # Redirect to login after successful signup
+
+                except IntegrityError as e:
+                    # Handle case where username might already exist
+                    if 'auth_user_username_key' in str(e) or 'UNIQUE constraint failed: auth_user.username' in str(e):
+                         form.add_error('username', 'This username is already taken. Please choose another.')
+                    else:
+                         messages.error(request, f'An unexpected database error occurred: {str(e)}')
+                    # Re-render form with errors
+                    return render(request, 'main/get_started.html', {'form': form})
+                except Exception as e:
+                     # Catch any other unexpected errors during creation
+                     messages.error(request, f'An error occurred during signup: {str(e)}')
+                     return render(request, 'main/get_started.html', {'form': form})
+                # -- END: Implement Object Creation --
         else:
             form = RestaurantSignupForm()
             
         return render(request, 'main/get_started.html', {'form': form})
     except Exception as e:
-        messages.error(request, f'Error during registration: {str(e)}')
+        messages.error(request, f'Error loading signup page: {str(e)}')
         return redirect('home')
 
 def schedule_demo(request):
@@ -536,3 +587,40 @@ def checkout(request, order_id):
     except Exception as e:
         messages.error(request, f'Error during checkout: {str(e)}')
         return redirect('order_history')
+
+@login_required
+def owner_dashboard(request):
+    """Dashboard view for restaurant owners"""
+    try:
+        # Verify the user is an owner
+        owner = get_object_or_404(Owner, user=request.user)
+        
+        # Get restaurant information
+        restaurant = owner.restaurant
+        
+        # Get recent orders for the restaurant
+        recent_orders = Order.objects.filter(
+            restaurant=restaurant
+        ).order_by('-created_at')[:5]
+        
+        # Get restaurant reviews
+        recent_reviews = Review.objects.filter(
+            restaurant=restaurant
+        ).order_by('-created_at')[:3]
+        
+        context = {
+            'owner': owner,
+            'restaurant': restaurant,
+            'recent_orders': recent_orders,
+            'recent_reviews': recent_reviews,
+        }
+        return render(request, 'main/owner_dashboard.html', context)
+    except Owner.DoesNotExist:
+        # Redirect to admin instead of home
+        messages.warning(request, 'Owner profile not found for this user. Redirecting to admin.') 
+        return redirect('/admin/') # Redirect to the main admin page
+    except Exception as e:
+        # Print the actual exception to the console for debugging
+        print(f"!!! ERROR IN OWNER DASHBOARD VIEW: {type(e).__name__} - {e}") # Add this print statement
+        messages.error(request, f'An unexpected error occurred while loading the dashboard.') # Generic message for user
+        return redirect('home')

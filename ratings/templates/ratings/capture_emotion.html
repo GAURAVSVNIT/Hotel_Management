@@ -1,0 +1,105 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Customer Emotion Capture</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Capture Customer Emotion</h5>
+                    <div class="form-group">
+                        <label for="tableNumber">Table Number:</label>
+                        <input type="number" class="form-control" id="tableNumber" placeholder="Enter table number">
+                    </div>
+                    <div class="d-flex justify-content-center my-3">
+                        <video id="video" width="400" height="300" autoplay></video>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-primary" id="captureBtn">Capture Emotion</button>
+                    </div>
+                    <canvas id="canvas" width="400" height="300" style="display: none;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body" id="resultCard">
+                    <h5 class="card-title">Result</h5>
+                    <div id="result">
+                        <p>Capture a customer emotion to see results</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('captureBtn');
+        const tableNumber = document.getElementById('tableNumber');
+        const result = document.getElementById('result');
+        
+        // Access webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error('Error accessing camera:', err);
+                alert('Could not access camera. Please check permissions.');
+            });
+        
+        // Capture image and send to server
+        captureBtn.addEventListener('click', function() {
+            // Draw video frame to canvas
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Get image data
+            const imageData = canvas.toDataURL('image/jpeg');
+            
+            // Send to server
+            const formData = new FormData();
+            formData.append('image_data', imageData);
+            formData.append('table_number', tableNumber.value);
+            
+            // Show loading indicator
+            result.innerHTML = '<p>Analyzing customer emotion...</p>';
+            
+            fetch('{% url "capture_emotion" %}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Display results
+                    const stars = '★'.repeat(data.rating) + '☆'.repeat(5 - data.rating);
+                    let emotionHTML = '<ul>';
+                    for (const [emotion, score] of Object.entries(data.emotion_scores)) {
+                        emotionHTML += `<li>${emotion}: ${score.toFixed(1)}%</li>`;
+                    }
+                    emotionHTML += '</ul>';
+                    
+                    result.innerHTML = `
+                        <div class="alert alert-success">
+                            <h4>${stars} (${data.rating}/5)</h4>
+                            <p>Dominant emotion: ${data.dominant_emotion}</p>
+                            <p>Emotion breakdown:</p>
+                            ${emotionHTML}
+                        </div>
+                    `;
+                } else {
+                    result.innerHTML = `<div class="alert alert-danger">Error: ${data.error}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                result.innerHTML = `<div class="alert alert-danger">Error processing request</div>`;
+            });
+        });
+    });
+</script>
+{% endblock %} 
