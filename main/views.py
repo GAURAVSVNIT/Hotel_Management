@@ -263,12 +263,14 @@ def place_order(request, restaurant_id):
                 return redirect('restaurant_detail', id=restaurant_id)
             
             if items_to_add:
-                # Create and save the order
+                # Create the order
                 order = Order(
                     user=request.user,
                     restaurant=restaurant,
                     status='Pending'
                 )
+                # Set skip_price_calculation for initial save since we don't have items yet
+                order.skip_price_calculation = True
                 order.save()
                 
                 # Add items to the order
@@ -278,6 +280,10 @@ def place_order(request, restaurant_id):
                         menu_item=menu_item,
                         quantity=quantity
                     )
+                
+                # Now calculate the total with all items
+                order.skip_price_calculation = False
+                order.save()  # This will trigger total calculation in save()
                 
                 messages.success(request, f'Your order from {restaurant.name} has been placed.')
                 return redirect('order_summary', order_id=order.id)
@@ -553,6 +559,10 @@ def checkout(request, order_id):
     """Process payment and checkout for an order"""
     try:
         order = get_object_or_404(Order, id=order_id, user=request.user)
+        
+        # Force recalculation of total
+        order.skip_price_calculation = False
+        order.save()
         
         # Check if order is already completed
         if order.status == 'Completed':

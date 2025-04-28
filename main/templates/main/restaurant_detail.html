@@ -44,7 +44,12 @@
     <!-- Menu Items -->
     <div class="mb-8">
         <h2 class="text-2xl font-bold mb-6">Menu</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-blue-50 p-4 rounded-lg mb-6">
+            <p class="text-blue-800"><i class="fas fa-info-circle mr-2"></i>Select quantities for multiple items and place your order all at once!</p>
+        </div>
+        <form method="post" action="{% url 'place_order' restaurant.id %}" id="orderForm">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for item in menu_items %}
             <div class="bg-white rounded-xl shadow-md overflow-hidden {% if request.GET.highlight == item.id|stringformat:'s' %}ring-2 ring-orange-500{% endif %}">
                 {% if item.image %}
@@ -62,14 +67,23 @@
                     <p class="text-gray-600 text-sm mb-4">{{ item.description }}</p>
                     <div class="flex items-center justify-between">
                         <span class="text-orange-600 font-bold">₹{{ item.price }}</span>
-                        <form method="post" action="{% url 'place_order' restaurant.id %}" class="inline">
-                            {% csrf_token %}
-                            <input type="hidden" name="quantity_{{ item.id }}" value="1">
-                            <button type="submit" 
-                                    class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300">
-                                Add to Order
-                            </button>
-                        </form>
+                        <div class="flex items-center">
+                            <label for="quantity_{{ item.id }}" class="mr-2 text-gray-700">Qty:</label>
+                            <select name="quantity_{{ item.id }}" id="quantity_{{ item.id }}" 
+                                    class="border rounded-md px-2 py-1 bg-white focus:ring-2 focus:ring-orange-500">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -78,7 +92,15 @@
                 <p class="text-gray-600">No menu items available at the moment.</p>
             </div>
             {% endfor %}
-        </div>
+            </div>
+            <div class="mt-8 text-center">
+                <button type="submit" 
+                        class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition duration-300 text-lg font-semibold shadow-md">
+                    Place Order
+                </button>
+                <p class="mt-2 text-gray-600 text-sm">Items with quantity 0 will not be added to your order</p>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

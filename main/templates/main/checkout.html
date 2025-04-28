@@ -3,6 +3,32 @@
 
 {% block title %}Checkout - StayNDine{% endblock %}
 
+{% block extra_head %}
+<style>
+    /* Payment logo styling */
+    .payment-logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 32px;
+        width: 48px;
+    }
+    
+    .payment-logo-container svg {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    input[type="radio"]:checked + div {
+        border-color: #2563eb;
+    }
+    
+    label:has(input[type="radio"]:checked) {
+        border-color: #2563eb;
+        background-color: #EFF6FF;
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div class="max-w-4xl mx-auto p-6">
     <h2 class="text-3xl font-semibold mb-6 text-center">Checkout</h2>
@@ -43,19 +69,19 @@
             <div class="p-4 bg-gray-50 border-t">
                 <div class="flex justify-between py-2">
                     <span>Subtotal</span>
-                    <span>₹{{ order.total_price }}</span>
+                    <span>₹{{ order.calculate_total }}</span>
                 </div>
                 
-                {% if order.discount_applied > 0 %}
+                {% if order.coupon %}
                     <div class="flex justify-between py-2 text-green-600">
-                        <span>Discount</span>
+                        <span>Discount ({{ order.coupon.discount_percentage }}% off)</span>
                         <span>-₹{{ order.discount_applied }}</span>
                     </div>
                 {% endif %}
                 
                 <div class="flex justify-between py-2 border-t border-gray-300 font-bold">
                     <span>Total</span>
-                    <span>₹{{ order.total_price|add:"-"|add:order.discount_applied }}</span>
+                    <span>₹{{ order.get_total_after_discount }}</span>
                 </div>
             </div>
         </div>
@@ -102,31 +128,71 @@
                     </div>
                 </div>
                 
-                <!-- Terms Checkbox -->
+                <!-- Payment Method Selection -->
                 <div class="mb-6">
-                    <label class="flex items-center">
-                        <input type="checkbox" name="terms" required
-                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                        <span class="ml-2 text-gray-700 text-sm">I agree to the <a href="#" class="text-blue-600 hover:underline">terms and conditions</a></span>
-                    </label>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Payment Method</label>
+                    <!-- Payment Methods -->
+                    <div class="grid grid-cols-3 gap-3 mb-4">
+                        <!-- Card options in one block -->
+                        <div class="col-span-2 grid grid-cols-2 gap-3">
+                            <!-- Visa -->
+                            <label class="relative flex items-center justify-between bg-white border-2 rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-blue-500 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <input type="radio" name="payment_method" value="visa" required 
+                                           class="w-4 h-4 text-blue-600 border-gray-300">
+                                    <span class="text-sm font-medium text-gray-900">Visa</span>
+                                </div>
+                                <svg class="w-10 h-10 text-blue-600" viewBox="0 0 48 48" fill="currentColor">
+                                    <path d="M15 25h2l1.66-8h-2zm13.5-8l-1.5 6c-.07-.42-.33-1.29-.33-1.29-.5-1.29-2-2.71-2-2.71l1.83-2h2zm3.5-9h-14c-2.21 0-4 1.79-4 4v16c0 2.21 1.79 4 4 4h14c2.21 0 4-1.79 4-4v-16c0-2.21-1.79-4-4-4z"/>
+                                </svg>
+                            </label>
+
+                            <!-- Mastercard -->
+                            <label class="relative flex items-center justify-between bg-white border-2 rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-blue-500 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <input type="radio" name="payment_method" value="mastercard" required
+                                           class="w-4 h-4 text-blue-600 border-gray-300">
+                                    <span class="text-sm font-medium text-gray-900">Card</span>
+                                </div>
+                                <svg class="w-10 h-10" viewBox="0 0 48 48">
+                                    <circle cx="17" cy="24" r="8" fill="#ff5f00"/>
+                                    <circle cx="31" cy="24" r="8" fill="#eb001b"/>
+                                    <path d="M24 32c3.32-2.67 5.33-6.77 5.33-11.33 0-4.57-2.01-8.67-5.33-11.33-3.32 2.67-5.33 6.77-5.33 11.33S20.68 29.33 24 32z" fill="#f79e1b"/>
+                                </svg>
+                            </label>
+                        </div>
+
+                        <!-- UPI -->
+                        <label class="relative flex items-center justify-between bg-white border-2 rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-blue-500 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <input type="radio" name="payment_method" value="upi" required
+                                       class="w-4 h-4 text-blue-600 border-gray-300">
+                                <span class="text-sm font-medium text-gray-900">UPI</span>
+                            </div>
+                            <svg class="w-8 h-8 text-blue-600 my-1" viewBox="0 0 48 48" fill="currentColor">
+                                <path d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm8.46 26.1l-4.01 4.01c-.55.55-1.28.83-2.01.83h-3.86c-.73 0-1.46-.28-2.01-.83l-4.01-4.01c-.55-.55-.83-1.28-.83-2.01v-3.86c0-.73.28-1.46.83-2.01l4.01-4.01c.55-.55 1.28-.83 2.01-.83h3.86c.73 0 1.46.28 2.01.83l4.01 4.01c.55.55.83 1.28.83 2.01v3.86c0 .73-.28 1.46-.83 2.01z"/>
+                            </svg>
+                        </label>
+                    </div>
+
+                    <!-- Terms Checkbox -->
+                    <div class="flex items-center justify-center bg-gray-50 p-3 rounded-lg">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="terms" required
+                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <span class="ml-2 text-sm text-gray-700">I agree to the <a href="#" class="text-blue-600 hover:underline">terms</a></span>
+                        </label>
+                    </div>
                 </div>
                 
                 <!-- Submit Button -->
-                <div>
-                    <button type="submit" 
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
-                        Pay ₹{{ order.total_price|add:"-"|add:order.discount_applied }} Now
+                <div class="p-4 bg-gray-50 border-t text-center">
+                    <button type="submit" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                        Pay ₹{{ order.get_total_after_discount }} Now
                     </button>
+                    <p class="text-center text-gray-500 text-sm mt-2">Secure payment processing</p>
                 </div>
             </form>
-            
-            <div class="p-4 bg-gray-50 border-t text-center">
-                <div class="flex justify-center space-x-4">
-                    <img src="{% static 'main/images/visa.svg' %}" alt="Visa" class="h-8" onerror="this.onerror=null; this.src='https://via.placeholder.com/50x30?text=Visa'">
-                    <img src="{% static 'main/images/mastercard.svg' %}" alt="Mastercard" class="h-8" onerror="this.onerror=null; this.src='https://via.placeholder.com/50x30?text=MC'">
-                    <img src="{% static 'main/images/amex.svg' %}" alt="American Express" class="h-8" onerror="this.onerror=null; this.src='https://via.placeholder.com/50x30?text=Amex'">
-                </div>
-            </div>
         </div>
     </div>
     
@@ -183,10 +249,18 @@
             const cvv = document.getElementById('cvv').value;
             const terms = document.querySelector('input[name="terms"]').checked;
             
+            // Validate payment method
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+            if (!paymentMethod) {
+                e.preventDefault();
+                alert('Please select a payment method');
+                return;
+            }
+            
             // Validate card holder
             if (cardHolder.length < 3) {
                 e.preventDefault();
-                alert('Please enter a valid cardholder name');
+                alert('Please enter a valid card holder name');
                 return;
             }
             
@@ -217,6 +291,21 @@
                 alert('Please agree to the terms and conditions');
                 return;
             }
+        });
+    });
+
+    // Hide/show card details based on payment method
+    document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const cardDetails = document.querySelectorAll('#card-holder, #card-number, #expiry, #cvv');
+            const cardLabels = document.querySelectorAll('[for="card-holder"], [for="card-number"], [for="expiry"], [for="cvv"]');
+            const showCardDetails = this.value !== 'upi';
+            
+            cardDetails.forEach(el => {
+                el.closest('.mb-4').style.display = showCardDetails ? 'block' : 'none';
+                if (!showCardDetails) el.removeAttribute('required');
+                else el.setAttribute('required', '');
+            });
         });
     });
 </script>
