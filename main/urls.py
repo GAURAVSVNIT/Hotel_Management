@@ -25,6 +25,9 @@ urlpatterns = [
     path('get-started/', views.get_started, name='get_started'),
     path('schedule-demo/', views.schedule_demo, name='schedule_demo'),
     path('contact/', views.contact, name='contact'),
+    
+    # Owner routes
+    path('owner/dashboard/', views.owner_dashboard, name='owner_dashboard'),
     path('aboutus/',views.aboutus,name = 'aboutus'),
 ]
 

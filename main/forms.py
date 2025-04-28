@@ -5,21 +5,24 @@ from django.core.validators import RegexValidator, EmailValidator
 from .models import Coupon
 
 class LoginForm(forms.Form):
-    """Form for user login"""
+    """Form for user login with owner toggle"""
     username = forms.CharField(
         max_length=150,
-        label="Username",
         widget=forms.TextInput(attrs={
             'class': 'form-input border p-2 rounded',
-            'placeholder': 'Enter your username'
+            'placeholder': 'Username'
         })
     )
     password = forms.CharField(
-        label="Password",
         widget=forms.PasswordInput(attrs={
             'class': 'form-input border p-2 rounded',
-            'placeholder': 'Enter your password'
+            'placeholder': 'Password'
         })
+    )
+    user_type = forms.BooleanField(
+        required=False,
+        label="Login as restaurant owner",
+        widget=forms.CheckboxInput(attrs={'class': 'hidden'})
     )
 
 class RegisterForm(UserCreationForm):
@@ -53,7 +56,7 @@ class CouponApplyForm(forms.Form):
         label="Coupon Code",
         required=False,  # Allow orders without a coupon
         widget=forms.TextInput(attrs={
-            'class': 'form-input border p-2 rounded',  # Tailwind-friendly
+            'class': 'form-input border p-2 rounded',
             'placeholder': 'Enter coupon code (if any)'
         })
     )
@@ -130,21 +133,48 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Contact email'
         })
-    )
+    ), # Comma after email field
+
     phone = forms.CharField(
         max_length=20,
         label="Phone Number",
-        validators=[
+        validators=[          
             RegexValidator(
                 regex=r'^\+?1?\d{9,15}$',
                 message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
             ),
         ],
-        widget=forms.TextInput(attrs={
+        widget=forms.TextInput(attrs={ 
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Phone number'
         })
-    )
+    ), # Comma after phone field
+
+    username = forms.CharField(
+        max_length=150,
+        label="Choose a Username",
+        widget=forms.TextInput(attrs={
+            'class': 'form-input border p-2 rounded',
+            'placeholder': 'Create a username for login'
+        })
+    ), # Comma after username field
+
+    password = forms.CharField(
+        label="Choose a Password",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-input border p-2 rounded',
+            'placeholder': 'Create a secure password'
+        })
+    ), # Comma after password field
+
+    confirm_password = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-input border p-2 rounded',
+            'placeholder': 'Enter password again'
+        })
+    ), # Comma after confirm_password field
+    
     address = forms.CharField(
         max_length=255,
         label="Restaurant Address",
@@ -152,7 +182,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Restaurant address'
         })
-    )
+    ), # Comma after address field
     city = forms.CharField(
         max_length=100,
         label="City",
@@ -160,7 +190,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'City'
         })
-    )
+    ), # Comma after city field
     cuisine_type = forms.ChoiceField(
         label="Cuisine Type",
         choices=[
@@ -177,7 +207,7 @@ class RestaurantSignupForm(forms.Form):
         widget=forms.Select(attrs={
             'class': 'form-select border p-2 rounded'
         })
-    )
+    ), # Comma after cuisine_type field
     other_cuisine = forms.CharField(
         max_length=100,
         label="If Other, please specify",
@@ -186,7 +216,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Specify cuisine type'
         })
-    )
+    ), # Comma after other_cuisine field
     seating_capacity = forms.IntegerField(
         label="Seating Capacity",
         min_value=1,
@@ -194,7 +224,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Number of seats'
         })
-    )
+    ), # Comma after seating_capacity field
     subscription_plan = forms.ChoiceField(
         label="Subscription Plan",
         choices=[
@@ -205,7 +235,7 @@ class RestaurantSignupForm(forms.Form):
         widget=forms.RadioSelect(attrs={
             'class': 'form-radio'
         })
-    )
+    ), # Comma after subscription_plan field
     additional_info = forms.CharField(
         label="Additional Information",
         required=False,
@@ -214,7 +244,7 @@ class RestaurantSignupForm(forms.Form):
             'placeholder': 'Any additional information you would like to share',
             'rows': 3
         })
-    )
+    ), # Comma after additional_info field
     terms_accepted = forms.BooleanField(
         label="I agree to the Terms and Conditions",
         widget=forms.CheckboxInput(attrs={
@@ -224,6 +254,14 @@ class RestaurantSignupForm(forms.Form):
     
     def clean(self):
         cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password and confirm_password and password != confirm_password:
+            self.add_error('confirm_password', "Passwords do not match.")
+            
+        # Call the original clean method's logic for other fields
+        # (e.g., cuisine type validation)
         cuisine_type = cleaned_data.get('cuisine_type')
         other_cuisine = cleaned_data.get('other_cuisine')
         

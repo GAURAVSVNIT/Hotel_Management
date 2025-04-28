@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Owner Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Owner Dashboard</h1>
+        <p class="text-gray-600">Welcome back, {{ request.user.username }}!</p>
+    </div>
+
+    <!-- Restaurant Information Card -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex items-start justify-between">
+            <div>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-2">{{ restaurant.name }}</h2>
+                <p class="text-gray-600 mb-1">{{ restaurant.location }}</p>
+                <p class="text-gray-600 mb-1">Cuisine: {{ restaurant.get_cuisine_display }}</p>
+                <p class="text-gray-600">Owner Contact: {{ owner.phone_number }}</p>
+            </div>
+            {% if restaurant.image %}
+            <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" class="h-24 w-24 object-cover rounded-lg">
+            {% else %}
+            <div class="h-24 w-24 bg-gray-200 rounded-lg flex items-center justify-center">
+                <span class="text-gray-500">No Image</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Recent Orders</h3>
+            <p class="text-3xl font-bold text-blue-600">{{ recent_orders.count }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Menu Items</h3>
+            <p class="text-3xl font-bold text-green-600">{{ restaurant.menu_items.count }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Customer Reviews</h3>
+            <p class="text-3xl font-bold text-purple-600">{{ restaurant.reviews.count }}</p>
+        </div>
+    </div>
+
+    <!-- Recent Orders Table -->
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Recent Orders</h2>
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        {% if recent_orders %}
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for order in recent_orders %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ order.id }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {% if order.user %}{{ order.user.username }}{% else %}Guest{% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ order.created_at|date:"M d, Y" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ order.get_total_after_discount }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            {% if order.status == 'Completed' %}bg-green-100 text-green-800
+                            {% elif order.status == 'Pending' %}bg-yellow-100 text-yellow-800
+                            {% elif order.status == 'Cancelled' %}bg-red-100 text-red-800
+                            {% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="p-6 text-center text-gray-500">No recent orders found.</div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Reviews -->
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Recent Reviews</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {% if recent_reviews %}
+            {% for review in recent_reviews %}
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-yellow-500 text-lg">{{ review.star_rating }}</p>
+                        <p class="text-sm text-gray-500">{{ review.created_at|date:"M d, Y" }}</p>
+                    </div>
+                    <p class="text-gray-700 font-medium">By: {{ review.get_reviewer_name }}</p>
+                </div>
+                <p class="text-gray-600">{{ review.review_text }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="bg-white rounded-lg shadow-md p-6 col-span-2 text-center text-gray-500">
+            No reviews yet.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap gap-4 mb-8">
+        <a href="#" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+            Edit Menu
+        </a>
+        <a href="#" class="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">
+            View All Orders
+        </a>
+        <a href="#" class="px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition">
+            Restaurant Settings
+        </a>
+    </div>
+</div>
+{% endblock %}
+
