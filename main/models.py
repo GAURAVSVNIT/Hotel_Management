@@ -201,3 +201,12 @@ class Review(models.Model):
     def star_rating(self):
         """Return a string of stars representing the rating"""
         return '★' * self.rating + '☆' * (5 - self.rating)
+
+class Owner(models.Model):
+    """Model for restaurant owners"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='owner_profile')
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='owners')
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    
+    def _str_(self):
+        return f"{self.user.username} - {self.restaurant.name}"
