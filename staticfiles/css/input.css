@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .hero {
+    @apply relative h-[600px] w-full;
+  }
+
+  .hero-image {
+    @apply w-full h-full object-cover;
+  }
+
+  .hero-content {
+    @apply absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-white px-4;
+  }
+
+  .hero-title {
+    @apply text-4xl md:text-5xl font-bold mb-4 text-center;
+  }
+
+  .hero-subtitle {
+    @apply text-xl md:text-2xl mb-8 text-center;
+  }
+
+  .primary-button {
+    @apply bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full transition duration-300;
+  }
+
+  .features {
+    @apply py-16 bg-gray-50;
+  }
+
+  .container {
+    @apply max-w-7xl mx-auto px-4;
+  }
+
+  .features-grid {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-8;
+  }
+
+  .feature-card {
+    @apply bg-white p-6 rounded-lg shadow-md text-center;
+  }
+
+  .feature-icon {
+    @apply w-12 h-12 mx-auto mb-4 text-red-600;
+  }
+
+  .feature-title {
+    @apply text-xl font-semibold mb-2;
+  }
+
+  .feature-description {
+    @apply text-gray-600;
+  }
+
+  .restaurants {
+    @apply py-16;
+  }
+
+  .section-title {
+    @apply text-3xl font-bold text-center mb-12;
+  }
+
+  .restaurants-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
+  }
+}
