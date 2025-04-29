@@ -25,8 +25,7 @@ db.sqlite3-journal
 **/migrations/
 !**/migrations/__init__.py
 
-# Static Files (ignored)
-staticfiles/
+# Static Files
 
 # ✅ Media Files (keep media/ in Git)
 # ⚠️ Commented out so you CAN track uploaded images
