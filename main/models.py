@@ -77,6 +77,7 @@ class Order(models.Model):
     discount_applied = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     coupon = models.ForeignKey(Coupon, null=True, blank=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now_add=True)
+    has_been_reviewed = models.BooleanField(default=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -211,3 +212,20 @@ class Owner(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.restaurant.name}"
     
+    def get_total_orders(self):
+        """Get total number of orders for the owner's restaurant"""
+        return self.restaurant.order_set.count()
+
+    def get_total_revenue(self):
+        """Get total revenue from all completed orders"""
+        return self.restaurant.order_set.filter(
+            status='Completed'
+        ).aggregate(
+            total=models.Sum('total_price')
+        )['total'] or 0
+
+    def get_average_rating(self):
+        """Get average rating for the restaurant"""
+        return self.restaurant.reviews.aggregate(
+            avg=models.Avg('rating')
+        )['avg'] or 0

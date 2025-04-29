@@ -2,28 +2,33 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator, EmailValidator
-from .models import Coupon
-
+from .models import Coupon, Review
 class LoginForm(forms.Form):
-    """Form for user login with owner toggle"""
     username = forms.CharField(
-        max_length=150,
         widget=forms.TextInput(attrs={
-            'class': 'form-input border p-2 rounded',
+            'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500',
             'placeholder': 'Username'
         })
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
-            'class': 'form-input border p-2 rounded',
+            'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500',
             'placeholder': 'Password'
         })
     )
-    user_type = forms.BooleanField(
-        required=False,
-        label="Login as restaurant owner",
-        widget=forms.CheckboxInput(attrs={'class': 'hidden'})
+    user_type = forms.ChoiceField(
+        choices=[('customer', 'Customer'), ('owner', 'Restaurant Owner')],
+        widget=forms.RadioSelect(attrs={
+            'class': 'form-radio text-orange-600'
+        }),
+        initial='customer'
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].label = "Username"
+        self.fields['password'].label = "Password"
+        self.fields['user_type'].label = "Login as"
 
 class RegisterForm(UserCreationForm):
     """Form for user registration extending Django's UserCreationForm"""
@@ -133,7 +138,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Contact email'
         })
-    ), # Comma after email field
+    )
 
     phone = forms.CharField(
         max_length=20,
@@ -148,7 +153,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Phone number'
         })
-    ), # Comma after phone field
+    )
 
     username = forms.CharField(
         max_length=150,
@@ -157,7 +162,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Create a username for login'
         })
-    ), # Comma after username field
+    )
 
     password = forms.CharField(
         label="Choose a Password",
@@ -165,7 +170,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Create a secure password'
         })
-    ), # Comma after password field
+    )
 
     confirm_password = forms.CharField(
         label="Confirm Password",
@@ -173,7 +178,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Enter password again'
         })
-    ), # Comma after confirm_password field
+    )
     
     address = forms.CharField(
         max_length=255,
@@ -182,7 +187,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Restaurant address'
         })
-    ), # Comma after address field
+    )
     city = forms.CharField(
         max_length=100,
         label="City",
@@ -190,7 +195,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'City'
         })
-    ), # Comma after city field
+    )
     cuisine_type = forms.ChoiceField(
         label="Cuisine Type",
         choices=[
@@ -207,7 +212,7 @@ class RestaurantSignupForm(forms.Form):
         widget=forms.Select(attrs={
             'class': 'form-select border p-2 rounded'
         })
-    ), # Comma after cuisine_type field
+    )
     other_cuisine = forms.CharField(
         max_length=100,
         label="If Other, please specify",
@@ -216,7 +221,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Specify cuisine type'
         })
-    ), # Comma after other_cuisine field
+    )
     seating_capacity = forms.IntegerField(
         label="Seating Capacity",
         min_value=1,
@@ -224,7 +229,7 @@ class RestaurantSignupForm(forms.Form):
             'class': 'form-input border p-2 rounded',
             'placeholder': 'Number of seats'
         })
-    ), # Comma after seating_capacity field
+    )
     subscription_plan = forms.ChoiceField(
         label="Subscription Plan",
         choices=[
@@ -235,7 +240,7 @@ class RestaurantSignupForm(forms.Form):
         widget=forms.RadioSelect(attrs={
             'class': 'form-radio'
         })
-    ), # Comma after subscription_plan field
+    )
     additional_info = forms.CharField(
         label="Additional Information",
         required=False,
@@ -244,7 +249,7 @@ class RestaurantSignupForm(forms.Form):
             'placeholder': 'Any additional information you would like to share',
             'rows': 3
         })
-    ), # Comma after additional_info field
+    )
     terms_accepted = forms.BooleanField(
         label="I agree to the Terms and Conditions",
         widget=forms.CheckboxInput(attrs={
@@ -270,3 +275,38 @@ class RestaurantSignupForm(forms.Form):
             self.add_error('other_cuisine', "Please specify the cuisine type.")
             
         return cleaned_data
+
+class ReviewForm(forms.Form):
+    """Form for submitting restaurant reviews"""
+    rating = forms.ChoiceField(
+        label="Rating",
+        choices=Review.RATING_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'form-select border p-2 rounded'
+        })
+    )
+    
+    review_text = forms.CharField(
+        label="Your Review",
+        widget=forms.Textarea(attrs={
+            'class': 'form-textarea border p-2 rounded',
+            'placeholder': 'Share your experience with this restaurant...',
+            'rows': 5
+        })
+    )
+    
+    name = forms.CharField(
+        label="Your Name (optional if logged in)",
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-input border p-2 rounded',
+            'placeholder': 'Enter your name'
+        })
+    )
+    
+    def clean_review_text(self):
+        review_text = self.cleaned_data.get('review_text')
+        if len(review_text.strip()) < 10:
+            raise forms.ValidationError("Please provide a more detailed review (minimum 10 characters)")
+        return review_text

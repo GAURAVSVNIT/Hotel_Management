@@ -1,0 +1,109 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Write a Review - DineEase{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto p-6">
+    <h2 class="text-3xl font-semibold mb-6 text-center">Write a Review</h2>
+
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
+        <!-- Restaurant Info Header -->
+        <div class="bg-gradient-to-r from-orange-500 to-red-600 p-4 text-white">
+            <h3 class="text-xl font-medium">{{ restaurant.name }}</h3>
+            <p class="text-sm opacity-90">{{ restaurant.cuisine|title }} Cuisine</p>
+        </div>
+        
+        <!-- Order Reference -->
+        <div class="bg-gray-50 p-4 border-b">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-gray-600 text-sm">Order #{{ order.id }}</p>
+                    <p class="text-gray-600 text-sm">Ordered on {{ order.created_at|date:"F j, Y" }}</p>
+                </div>
+                <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    Completed
+                </span>
+            </div>
+        </div>
+        
+        <!-- Review Form -->
+        <div class="p-6">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mb-4 p-4 {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %} rounded-lg">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Rating Field -->
+                <div class="mb-6">
+                    <label for="{{ form.rating.id_for_label }}" class="block text-gray-700 font-medium mb-2">
+                        {{ form.rating.label }}
+                    </label>
+                    {{ form.rating }}
+                    {% if form.rating.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ form.rating.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Review Text Field -->
+                <div class="mb-6">
+                    <label for="{{ form.review_text.id_for_label }}" class="block text-gray-700 font-medium mb-2">
+                        {{ form.review_text.label }}
+                    </label>
+                    {{ form.review_text }}
+                    {% if form.review_text.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ form.review_text.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-gray-500 text-sm mt-1">Share your experience with this restaurant (minimum 10 characters).</p>
+                </div>
+
+                <!-- Name Field (optional for logged-in users) -->
+                {% if not user.is_authenticated %}
+                <div class="mb-6">
+                    <label for="{{ form.name.id_for_label }}" class="block text-gray-700 font-medium mb-2">
+                        {{ form.name.label }}
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Form Actions -->
+                <div class="flex items-center justify-end space-x-4 mt-8">
+                    <a href="{% url 'order_summary' order.id %}" 
+                       class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors">
+                        Cancel
+                    </a>
+                    <button type="submit" 
+                            class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors">
+                        Submit Review
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Information Card -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-blue-800 text-sm">
+        <div class="flex items-start">
+            <div class="flex-shrink-0 mt-0.5">
+                <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="font-medium">Your review helps others!</p>
+                <p class="mt-1">Your honest feedback helps others make informed dining decisions and helps restaurants improve their service.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

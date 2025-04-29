@@ -6,10 +6,12 @@ from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.models import User  # Import User model
 from django.db import IntegrityError, transaction # For database transactions
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Restaurant, MenuItem, Order, OrderItem, Coupon, Review, Owner
-from .forms import LoginForm, RegisterForm, CouponApplyForm, ContactForm, RestaurantSignupForm
-import re
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Sum, Avg
+from django.db.models import Count, Sum, Avg
+from django.db.models.functions import TruncDate
+from .models import Restaurant, MenuItem, Coupon, Order, OrderItem, Review, Owner
+from .forms import LoginForm, RegisterForm, CouponApplyForm, ContactForm, RestaurantSignupForm, ReviewForm
 
 # Validation utility functions
 def is_valid_email(email):
@@ -133,7 +135,8 @@ def login_view(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user_type = 'owner' if form.cleaned_data.get('user_type') else 'customer'
+            # Get the user type from form (fixed in 2025-04-29 to correctly handle 'customer' and 'owner')
+            user_type = form.cleaned_data.get('user_type')
             user = authenticate(username=username, password=password)
             
             if user is not None:
@@ -604,35 +607,88 @@ def owner_dashboard(request):
     try:
         # Verify the user is an owner
         owner = get_object_or_404(Owner, user=request.user)
-        
-        # Get restaurant information
         restaurant = owner.restaurant
+        
+        # Calculate statistics directly with querysets
+        total_orders = Order.objects.filter(restaurant=restaurant).count()
+        
+        # Calculate total revenue from completed orders
+        revenue_result = Order.objects.filter(
+            restaurant=restaurant,
+            status='Completed'
+        ).aggregate(
+            total=Sum('total_price')
+        )
+        total_revenue = revenue_result['total'] or 0
+        
+        # Calculate average rating
+        rating_result = Review.objects.filter(
+            restaurant=restaurant
+        ).aggregate(
+            avg=Avg('rating')
+        )
+        average_rating = rating_result['avg'] or 0
         
         # Get recent orders for the restaurant
         recent_orders = Order.objects.filter(
             restaurant=restaurant
         ).order_by('-created_at')[:5]
         
-        # Get restaurant reviews
+        # Get recent reviews
         recent_reviews = Review.objects.filter(
             restaurant=restaurant
         ).order_by('-created_at')[:3]
         
+        # Get best-selling items
+        bestsellers = OrderItem.objects.filter(
+            order__restaurant=restaurant,
+            order__status='Completed'
+        ).values(
+            'menu_item__name'
+        ).annotate(
+            total_ordered=Count('id')
+        ).order_by('-total_ordered')[:5]
+        
+        # Get daily orders for current month
+        daily_orders = Order.objects.filter(
+            restaurant=restaurant,
+            created_at__month=timezone.now().month
+        ).annotate(
+            date=TruncDate('created_at')
+        ).values('date').annotate(
+            count=Count('id'),
+            revenue=Sum('total_price')
+        ).order_by('-date')[:30]
+        
         context = {
             'owner': owner,
             'restaurant': restaurant,
+            'total_orders': total_orders,
+            'total_revenue': total_revenue,
+            'average_rating': average_rating,
             'recent_orders': recent_orders,
             'recent_reviews': recent_reviews,
+            'bestsellers': bestsellers,
+            'daily_orders': daily_orders,
+            # Add statistics for the dashboard
+            'stats': {
+                'pending_orders': Order.objects.filter(restaurant=restaurant, status='Pending').count(),
+                'completed_orders': Order.objects.filter(restaurant=restaurant, status='Completed').count(),
+                'menu_items': MenuItem.objects.filter(restaurant=restaurant).count(),
+                'total_reviews': restaurant.reviews.count(),
+            }
         }
         return render(request, 'main/owner_dashboard.html', context)
     except Owner.DoesNotExist:
-        # Redirect to admin instead of home
-        messages.warning(request, 'Owner profile not found for this user. Redirecting to admin.') 
-        return redirect('/admin/') # Redirect to the main admin page
+        # Redirect to login page with appropriate message
+        messages.warning(request, 'Owner profile not found for this user. Please log in with an owner account.') 
+        return redirect('login')
     except Exception as e:
         # Print the actual exception to the console for debugging
-        print(f"!!! ERROR IN OWNER DASHBOARD VIEW: {type(e).__name__} - {e}") # Add this print statement
-        messages.error(request, f'An unexpected error occurred while loading the dashboard.') # Generic message for user
+        import traceback
+        print(f"!!! ERROR IN OWNER DASHBOARD VIEW: {type(e).__name__} - {e}")
+        traceback.print_exc()
+        messages.error(request, 'An unexpected error occurred while loading the dashboard. Please try again.')
         return redirect('home')
     
 def aboutus(request):
@@ -642,3 +698,229 @@ def aboutus(request):
         messages.error(request, f'Error loading about us page: {str(e)}')
         return render(request, 'main/aboutus.html')
     
+@login_required
+def owner_menu_edit(request):
+    """View for restaurant owners to edit their menu items"""
+    try:
+        # Verify the user is an owner
+        owner = get_object_or_404(Owner, user=request.user)
+        restaurant = owner.restaurant
+        
+        if request.method == 'POST':
+            action = request.POST.get('action')
+            
+            if action == 'add':
+                # Add new menu item
+                name = request.POST.get('name')
+                price = request.POST.get('price')
+                description = request.POST.get('description')
+                image = request.FILES.get('image')
+                
+                if name and price:
+                    try:
+                        MenuItem.objects.create(
+                            restaurant=restaurant,
+                            name=name,
+                            price=price,
+                            description=description,
+                            image=image if image else None
+                        )
+                        messages.success(request, 'Menu item added successfully!')
+                    except ValueError:
+                        messages.error(request, 'Invalid price format.')
+                else:
+                    messages.error(request, 'Please provide both name and price.')
+            
+            elif action == 'edit':
+                # Edit existing menu item
+                item_id = request.POST.get('item_id')
+                item = get_object_or_404(MenuItem, id=item_id, restaurant=restaurant)
+                
+                name = request.POST.get('name')
+                price = request.POST.get('price')
+                description = request.POST.get('description')
+                image = request.FILES.get('image')
+                
+                if name and price:
+                    try:
+                        item.name = name
+                        item.price = price
+                        item.description = description
+                        if image:
+                            item.image = image
+                        item.save()
+                        messages.success(request, 'Menu item updated successfully!')
+                    except ValueError:
+                        messages.error(request, 'Invalid price format.')
+                else:
+                    messages.error(request, 'Please provide both name and price.')
+            
+            elif action == 'delete':
+                # Delete menu item
+                item_id = request.POST.get('item_id')
+                item = get_object_or_404(MenuItem, id=item_id, restaurant=restaurant)
+                item.delete()
+                messages.success(request, 'Menu item deleted successfully!')
+            
+            return redirect('owner_menu_edit')
+        
+        # Get all menu items for this restaurant
+        menu_items = MenuItem.objects.filter(restaurant=restaurant)
+        
+        context = {
+            'restaurant': restaurant,
+            'menu_items': menu_items,
+        }
+        return render(request, 'main/owner_menu_edit.html', context)
+    except Exception as e:
+        messages.error(request, 'An error occurred while managing menu items.')
+        return redirect('owner_dashboard')
+
+@login_required
+def owner_orders(request):
+    """View for restaurant owners to manage their orders"""
+    try:
+        # Verify the user is an owner
+        owner = get_object_or_404(Owner, user=request.user)
+        restaurant = owner.restaurant
+        
+        if request.method == 'POST':
+            order_id = request.POST.get('order_id')
+            new_status = request.POST.get('status')
+            
+            if order_id and new_status:
+                order = get_object_or_404(Order, id=order_id, restaurant=restaurant)
+                if new_status in [status[0] for status in Order.STATUS_CHOICES]:
+                    order.status = new_status
+                    order.save()
+                    messages.success(request, f'Order #{order.id} status updated to {new_status}')
+                else:
+                    messages.error(request, 'Invalid status selected.')
+            return redirect('owner_orders')
+        
+        # Get orders with optional filters
+        status_filter = request.GET.get('status')
+        date_filter = request.GET.get('date')
+        
+        orders = Order.objects.filter(restaurant=restaurant)
+        
+        if status_filter:
+            orders = orders.filter(status=status_filter)
+        if date_filter:
+            orders = orders.filter(created_at__date=date_filter)
+            
+        orders = orders.order_by('-created_at')
+        
+        context = {
+            'restaurant': restaurant,
+            'orders': orders,
+            'status_choices': Order.STATUS_CHOICES,
+            'current_status': status_filter,
+        }
+        return render(request, 'main/owner_orders.html', context)
+    except Exception as e:
+        messages.error(request, 'An error occurred while managing orders.')
+        return redirect('owner_dashboard')
+
+@login_required
+def owner_settings(request):
+    """View for restaurant owners to manage their restaurant settings"""
+    try:
+        # Verify the user is an owner
+        owner = get_object_or_404(Owner, user=request.user)
+        restaurant = owner.restaurant
+        
+        if request.method == 'POST':
+            # Update restaurant information
+            name = request.POST.get('name')
+            location = request.POST.get('location')
+            description = request.POST.get('description')
+            cuisine = request.POST.get('cuisine')
+            image = request.FILES.get('image')
+            phone = request.POST.get('phone')
+            
+            if name and location and cuisine:
+                restaurant.name = name
+                restaurant.location = location
+                restaurant.description = description
+                restaurant.cuisine = cuisine
+                if image:
+                    restaurant.image = image
+                restaurant.save()
+                
+                if phone:
+                    owner.phone_number = phone
+                    owner.save()
+                
+                messages.success(request, 'Restaurant settings updated successfully!')
+            else:
+                messages.error(request, 'Please fill in all required fields.')
+            
+            return redirect('owner_settings')
+        
+        context = {
+            'owner': owner,
+            'restaurant': restaurant,
+            'cuisine_choices': Restaurant.CUISINE_CHOICES,
+        }
+        return render(request, 'main/owner_settings.html', context)
+    except Exception as e:
+        messages.error(request, 'An error occurred while updating settings.')
+        return redirect('owner_dashboard')
+
+@login_required
+def submit_review(request, order_id):
+    """Handle submission of restaurant reviews after order completion"""
+    try:
+        # Get the order and verify it belongs to the current user
+        order = get_object_or_404(Order, id=order_id, user=request.user)
+        
+        # Check if order is completed
+        if order.status != 'Completed':
+            messages.error(request, 'You can only review completed orders.')
+            return redirect('order_summary', order_id=order.id)
+        
+        # Check if order has already been reviewed
+        if order.has_been_reviewed:
+            messages.info(request, 'You have already reviewed this order.')
+            return redirect('order_summary', order_id=order.id)
+        
+        # Get the restaurant from the order
+        restaurant = order.restaurant
+        
+        if request.method == 'POST':
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                # Create and save the review
+                review = Review(
+                    user=request.user,
+                    restaurant=restaurant,
+                    rating=form.cleaned_data['rating'],
+                    review_text=form.cleaned_data['review_text']
+                )
+                
+                # Add name if provided (shouldn't be needed for logged-in users but just in case)
+                if 'name' in form.cleaned_data and form.cleaned_data['name']:
+                    review.name = form.cleaned_data['name']
+                    
+                review.save()
+                
+                # Mark the order as reviewed
+                order.has_been_reviewed = True
+                order.save()
+                
+                messages.success(request, 'Thank you for your review!')
+                return redirect('order_history')
+        else:
+            # Initialize the form
+            form = ReviewForm()
+        
+        context = {
+            'form': form,
+            'order': order,
+            'restaurant': restaurant
+        }
+        return render(request, 'main/review_form.html', context)
+    except Exception as e:
+        messages.error(request, f'Error submitting review: {str(e)}')
+        return redirect('order_history')
