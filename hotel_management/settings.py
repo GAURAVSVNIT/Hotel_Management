@@ -12,9 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-din1va($#$!cnre$*v8we+5wvufhw&#d^2n0mhgu#-1(ym^h+q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.pythonanywhere.com']  # Updated for PythonAnywhere
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'poserdropbear.pythonanywhere.com', 'Hotel_Management.onrender.com']  # Updated for PythonAnywhere
 
 # Application definition
 INSTALLED_APPS = [
