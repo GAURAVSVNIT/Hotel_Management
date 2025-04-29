@@ -4,17 +4,21 @@ Django settings for hotel_management project.
 
 from pathlib import Path
 import os
+from os import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-din1va($#$!cnre$*v8we+5wvufhw&#d^2n0mhgu#-1(ym^h+q'
+SECRET_KEY = environ.get('SECRET_KEY', 'django-insecure-din1va($#$!cnre$*v8we+5wvufhw&#d^2n0mhgu#-1(ym^h+q')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'poserdropbear.pythonanywhere.com', 'Hotel_Management.onrender.com']  # Updated for PythonAnywhere
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'poserdropbear.pythonanywhere.com', 'hotel-management.onrender.com']
+
+# CSRF Trusted Origins for Render
+CSRF_TRUSTED_ORIGINS = ['https://hotel-management.onrender.com']
 
 # Application definition
 INSTALLED_APPS = [
