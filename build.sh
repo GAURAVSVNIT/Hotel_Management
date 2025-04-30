@@ -19,6 +19,11 @@ echo "Setting permissions..."
 chmod -R 755 media
 chmod -R 755 staticfiles
 
+# Copy initial media files to media directory
+echo "Copying initial media files..."
+cp -r initial_media/menu_items/* media/menu_items/ || echo "No menu items to copy"
+cp -r initial_media/restaurants/* media/restaurants/ || echo "No restaurant images to copy"
+
 # Collect static files
 echo "Collecting static files..."
 python manage.py collectstatic --no-input
