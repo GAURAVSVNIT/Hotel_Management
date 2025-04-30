@@ -692,6 +692,7 @@ def owner_dashboard(request):
         return redirect('home')
     
 def aboutus(request):
+    """View function for the about us page"""
     try:
         return render(request, 'main/aboutus.html')
     except Exception as e:

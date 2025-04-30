@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: hotel-management
+    runtime: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn hotel_management.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DJANGO_ENV
+        value: production
+      - key: DJANGO_ALLOWED_HOSTS
+        value: .onrender.com,hotel-management.onrender.com
+      - key: SECRET_KEY
+        generateValue: true
+    
+    # Configure disk for media files
+    disk:
+      name: media
+      mountPath: /opt/render/project/src/media
+      sizeGB: 1
+      
+    # Static and media file routing
+    routes:
+      - type: rewrite
+        source: /static/(.*)
+        destination: /staticfiles/$1
+      - type: rewrite
+        source: /media/(.*)
+        destination: /media/$1
+
