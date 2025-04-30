@@ -178,11 +178,11 @@ def health_check(request):
 
 # Define main URL patterns
 urlpatterns = debug_patterns + [
-    # Health check should be accessible without authentication
-    path('health/', health_check, name='health_check'),
-    path('admin/', admin.site.urls),
-    path('', include('main.urls')),
-    path('rating/', include('ratings.urls')),
+# Health check should be accessible without authentication
+path('health/', health_check, name='health_check'),
+path('admin/', admin.site.urls),
+path('', include('main.urls')),
+#path('rating/', include('ratings.urls')),
 ]
 
 # Add logging middleware to settings
