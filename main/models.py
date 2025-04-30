@@ -21,7 +21,7 @@ class Restaurant(models.Model):
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to="restaurants/", blank=True, null=True)
+    image = models.CharField(max_length=255, blank=True, null=True, help_text="Relative path to image in static/images/restaurants/")
     cuisine = models.CharField(
         max_length=20,
         choices=CUISINE_CHOICES,
@@ -31,16 +31,34 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def url(self):
+        if self.image and self.image.strip():
+            # Remove any existing 'restaurants/' prefix to avoid duplication
+            image_path = self.image.strip()
+            if not image_path.startswith('restaurants/'):
+                image_path = f'restaurants/{image_path}'
+            return f"/static/images/{image_path}"
+        return '/static/images/restaurants/default.jpg'
+
 class MenuItem(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name="menu_items")
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to="menu_items/", blank=True, null=True)
-
+    image = models.CharField(max_length=255, blank=True, null=True, help_text="Relative path to image in static/images/menu_items/")
     def __str__(self):
         return f"{self.name} - {self.restaurant.name}"
-
+    
+    @property
+    def url(self):
+        if self.image and self.image.strip():
+            # Remove any existing 'menu_items/' prefix to avoid duplication
+            image_path = self.image.strip()
+            if not image_path.startswith('menu_items/'):
+                image_path = f'menu_items/{image_path}'
+            return f"/static/images/{image_path}"
+        return '/static/images/menu_items/default.jpg'
 class Coupon(models.Model):
     code = models.CharField(max_length=20, unique=True, blank=True)
     discount_percentage = models.IntegerField(default=10)

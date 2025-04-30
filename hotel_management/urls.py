@@ -77,9 +77,9 @@ if settings.DEBUG:
                 ),
                 name='media'
         ),
-        # Explicitly serve static files
+        # Explicitly serve static files from STATICFILES_DIRS for development
         re_path(r'^static/(?P<path>.*)$', serve, {
-            'document_root': settings.STATIC_ROOT,
+            'document_root': settings.STATICFILES_DIRS[0],  # Use STATICFILES_DIRS instead of STATIC_ROOT for development
             'show_indexes': True,
         }, name='static'),
         

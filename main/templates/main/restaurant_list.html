@@ -49,7 +49,7 @@
         <div class="bg-white p-4 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
             <!-- Restaurant Image -->
             {% if restaurant.image %}
-            <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" class="w-full h-48 object-cover rounded-lg mb-4">
+            <img src="{{ restaurant.url }}" alt="{{ restaurant.name }}" class="w-full h-48 object-cover rounded-lg mb-4">
             {% else %}
             <div class="w-full h-48 bg-gray-200 flex items-center justify-center rounded-lg mb-4">
                 <span class="text-gray-500">No Image Available</span>

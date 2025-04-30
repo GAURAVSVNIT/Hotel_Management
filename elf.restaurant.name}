@@ -1,0 +1,43 @@
+[1mdiff --git a/main/models.py b/main/models.py[m
+[1mindex 42440ed..eacb654 100644[m
+[1m--- a/main/models.py[m
+[1m+++ b/main/models.py[m
+[36m@@ -21,7 +21,7 @@[m [mclass Restaurant(models.Model):[m
+     name = models.CharField(max_length=255)[m
+     location = models.CharField(max_length=255)[m
+     description = models.TextField(blank=True)[m
+[31m-    image = models.ImageField(upload_to="restaurants/", blank=True, null=True)[m
+[32m+[m[32m    image = models.CharField(max_length=255, blank=True, null=True, help_text="Relative path to image in static/images/restaurants/")[m
+     cuisine = models.CharField([m
+         max_length=20,[m
+         choices=CUISINE_CHOICES,[m
+[36m@@ -31,16 +31,26 @@[m [mclass Restaurant(models.Model):[m
+     def __str__(self):[m
+         return self.name[m
+ [m
+[32m+[m[32m    @property[m
+[32m+[m[32m    def url(self):[m
+[32m+[m[32m        if self.image:[m
+[32m+[m[32m            return f"/static/images/restaurants/{self.image}"[m
+[32m+[m[32m        return ''[m
+[32m+[m
+ class MenuItem(models.Model):[m
+     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name="menu_items")[m
+     name = models.CharField(max_length=255)[m
+     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])[m
+     description = models.TextField(blank=True)[m
+[31m-    image = models.ImageField(upload_to="menu_items/", blank=True, null=True)[m
+[31m-[m
+[32m+[m[32m    image = models.CharField(max_length=255, blank=True, null=True, help_text="Relative path to image in static/images/menu_items/")[m
+     def __str__(self):[m
+         return f"{self.name} - {self.restaurant.name}"[m
+[31m-[m
+[32m+[m[41m    [m
+[32m+[m[32m    @property[m
+[32m+[m[32m    def url(self):[m
+[32m+[m[32m        if self.image:[m
+[32m+[m[32m            return f"/static/images/menu_items/{self.image}"[m
+[32m+[m[32m        return ''[m
+ class Coupon(models.Model):[m
+     code = models.CharField(max_length=20, unique=True, blank=True)[m
+     discount_percentage = models.IntegerField(default=10)[m

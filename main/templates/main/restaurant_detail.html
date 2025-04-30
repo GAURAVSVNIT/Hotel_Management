@@ -9,7 +9,7 @@
     <div class="mb-8">
         <div class="relative h-[300px] rounded-xl overflow-hidden mb-6">
             {% if restaurant.image %}
-            <img src="{{ restaurant.image.url }}" 
+            <img src="{{ restaurant.url }}" 
                  alt="{{ restaurant.name }}" 
                  class="w-full h-full object-cover">
             {% else %}
@@ -53,7 +53,7 @@
             {% for item in menu_items %}
             <div class="bg-white rounded-xl shadow-md overflow-hidden {% if request.GET.highlight == item.id|stringformat:'s' %}ring-2 ring-orange-500{% endif %}">
                 {% if item.image %}
-                <img src="{{ item.image.url }}" 
+                <img src="{{ item.url }}" 
                      alt="{{ item.name }}" 
                      class="w-full h-48 object-cover">
                 {% else %}
