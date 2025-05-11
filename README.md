@@ -1,4 +1,4 @@
-# Hotel Management System
+# DineEase - Restaurant Management System
 
 A comprehensive hotel management system built with Django and Tailwind CSS.
 
