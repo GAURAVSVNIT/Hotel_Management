@@ -107,11 +107,4 @@ If you encounter any issues during setup:
 3. Verify that all dependencies are installed
 4. Check the Django error logs
 
-## License
-
-[Include license information here]
-
-## Contributing
-
-[Include contribution guidelines here]
 
